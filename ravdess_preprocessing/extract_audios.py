@@ -9,7 +9,7 @@ import numpy as np
 ##this file preprocess audio files to ensure they are of the same length. if length is less than 3.6 seconds, it is padded with zeros in the end. otherwise, it is equally cropped from 
 ##both sides
 
-root = '/lustre/scratch/chumache/RAVDESS_or/'
+root = './datasets/Ravdess/'
 target_time = 3.6 #sec
 for actor in os.listdir(root):
     for audiofile in os.listdir(os.path.join(root, actor)):
@@ -29,5 +29,3 @@ for actor in os.listdir(root):
             y = y[remain//2:-(remain - remain//2)]
 	    
         sf.write(os.path.join(root, actor, audiofile[:-4]+'_croppad.wav'), y, sr)
-
-	

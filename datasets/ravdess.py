@@ -21,10 +21,10 @@ def video_loader(video_dir_path):
 def get_default_video_loader():
     return functools.partial(video_loader)
 
-def load_audio(audiofile, sr):
-    audios = librosa.core.load(audiofile, sr)
-    y = audios[0]
+def load_audio(audiofile):
+    y, sr = librosa.load(audiofile, sr=22050)
     return y, sr
+
 
 def get_mfccs(y, sr):
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=10)
@@ -77,7 +77,7 @@ class RAVDESS(data.Dataset):
             
         if self.data_type == 'audio' or self.data_type == 'audiovisual':
             path = self.data[index]['audio_path']
-            y, sr = load_audio(path, sr=22050) 
+            y, sr = load_audio(path) 
             
             if self.audio_transform is not None:
                  self.audio_transform.randomize_parameters()
@@ -88,8 +88,11 @@ class RAVDESS(data.Dataset):
 
             if self.data_type == 'audio':
                 return audio_features, target
+            
         if self.data_type == 'audiovisual':
             return audio_features, clip, target  
 
     def __len__(self):
         return len(self.data)
+
+

@@ -196,17 +196,9 @@ class MultiModalCNN(nn.Module):
             
 
     def forward(self, x_audio, x_visual):
+        x_visual = self.visual_model.forward(x_visual)
+        return x_visual 
 
-        if self.fusion == 'lt':
-            return self.forward_transformer(x_audio, x_visual)
-
-        elif self.fusion == 'ia':
-            return self.forward_feature_2(x_audio, x_visual)
-       
-        elif self.fusion == 'it':
-            return self.forward_feature_3(x_audio, x_visual)
-
- 
         
     def forward_feature_3(self, x_audio, x_visual):
         x_audio = self.audio_model.forward_stage1(x_audio)
@@ -289,6 +281,8 @@ class MultiModalCNN(nn.Module):
         x = torch.cat((audio_pooled, video_pooled), dim=-1)  
         x1 = self.classifier_1(x)
         return x1
+    
+    
  
     
     

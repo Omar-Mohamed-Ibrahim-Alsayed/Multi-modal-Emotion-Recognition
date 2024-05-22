@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-root = '/lustre/scratch/chumache/RAVDESS_or/'
-
+root1 = './datasets/Ravdess/'
+root = './datasets/Ravdess/'
 n_folds=1
 folds = [[[0,1,2,3],[4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]]]
 for fold in range(n_folds):
@@ -32,4 +32,3 @@ for fold in range(n_folds):
                     with open(annotation_file, 'a') as f:
                         f.write(os.path.join(root, actor, video) + ';' + os.path.join(root,actor, audio) + ';'+ label + ';testing' + '\n')
 		
-

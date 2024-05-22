@@ -18,7 +18,7 @@ def val_epoch_multimodal(epoch, data_loader, model, criterion, opt, logger,modal
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
-
+    
     end_time = time.time()
     for i, (inputs_audio, inputs_visual, targets) in enumerate(data_loader):
         data_time.update(time.time() - end_time)
@@ -46,11 +46,9 @@ def val_epoch_multimodal(epoch, data_loader, model, criterion, opt, logger,modal
 
             elif dist == 'zeros':
                 inputs_audio = torch.zeros(inputs_audio.size())
+     
         inputs_visual = inputs_visual.permute(0,2,1,3,4)
         inputs_visual = inputs_visual.reshape(inputs_visual.shape[0]*inputs_visual.shape[1], inputs_visual.shape[2], inputs_visual.shape[3], inputs_visual.shape[4])
-        
-
-
         
         targets = targets.to(opt.device)
         with torch.no_grad():
@@ -58,6 +56,7 @@ def val_epoch_multimodal(epoch, data_loader, model, criterion, opt, logger,modal
             inputs_audio = Variable(inputs_audio)
             targets = Variable(targets)
         outputs = model(inputs_audio, inputs_visual)
+
         loss = criterion(outputs, targets)
         prec1, prec5 = calculate_accuracy(outputs.data, targets.data, topk=(1,5))
         top1.update(prec1, inputs_audio.size(0))
