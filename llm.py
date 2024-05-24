@@ -180,7 +180,7 @@ def main():
         else:
             print("Invalid choice. Please enter a number between 1 and", len(psychological_tests))
 
-    questions = report_generator.generate_questions()
+    questions = report_generator.generate_questions(selected_test)
     print(f"Questions generated:{questions}")
 
     answers = report_generator.generate_answers(questions)
