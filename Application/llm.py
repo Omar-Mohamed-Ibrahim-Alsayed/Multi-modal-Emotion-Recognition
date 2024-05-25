@@ -1,33 +1,30 @@
 from groq import Groq
 import json
 import os
+import time
 
 
 class PsychologicalReportGenerator:
-    def __init__(self, api_key, model="llama3-70b-8192"):
+    def __init__(self, api_key="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", model="llama3-70b-8192"):
         self.client = Groq(api_key=api_key)
         self.model = model
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
 
-    def generate_questions(self, disease_name, number_of_questions=8, questions_type="psychological"):
+    def generate_questions(self, number_of_questions=8, questions_type="psychological"):
         response = self.client.chat.completions.create(
             messages=[
                 {
                     "role": "system",
-                    "content": f""" Consider yourself as a psychiatric with comprehensive knowledge about 
-                    psychological disease or disorders so I'll provide you with the name of psychological disease or 
-                    disorder then provide me with a set of {number_of_questions} questions as a {questions_type} test 
-                    to be given and they should be open questions where the respondent will answer by talking. 
-                    Provide the questions in JSON format only and nothing else, 
-                    make sure that the JSON format is valid. The name of the disease is {disease_name}. 
+                    "content": f"""provide me with a set of {number_of_questions} questions as a {questions_type} test to be given they are open questions where the respondent will answer by talking
+                    Provide the response in JSON format only and nothing outside the JSON format.
                     Use this as an example:
                     {{
-                    "1":  {{
-                        "Question": "Your generated Question 1"
-                    }} ,
-                    "2": {{ 
-                        "Question": "Your generated Question 2"
-                    }}
+                        "Question1": {{
+                            "Question": "Your generated Question 1"
+                        }},
+                        "Question2": {{
+                            "Question": "Your generated Question 2"
+                        }}
                     }}"""
                 }
             ],
@@ -36,7 +33,7 @@ class PsychologicalReportGenerator:
 
         response_content = response.choices[0].message.content
         print("Response:", response_content)
-        self._save_response(response_content, "questions.json")
+        response_content = self._save_response(response_content, "questions.json")
         return response_content
 
     def _generate_answers(self, prompt):
@@ -74,6 +71,25 @@ class PsychologicalReportGenerator:
         self._save_response(response_content, "answers.json")
         return response_content
 
+    def fix_output(self, prompt):
+        response = self.client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": """ The following response should be in JSON format however it has an error which will be provided. Fix it and return the json format only no extra messages.
+                                        Provide the response in JSON format only and nothing outside the JSON format.
+
+                    """
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            model=self.model
+        )
+        return response.choices[0].message.content
+
     def _generate_report(self, prompt):
         response = self.client.chat.completions.create(
             messages=[
@@ -105,40 +121,49 @@ class PsychologicalReportGenerator:
 
         response_content = response.choices[0].message.content
         print("Response:", response_content)
-        self._save_response(response_content, "report.json")
-        return response_content
+        json_response = self._save_response(response_content, "report.json")
+        return json_response
 
     # Saving Response
     def _save_response(self, response_content, filename):
         filepath = os.path.join(self.script_dir, filename)
-        try:
-            response_json = json.loads(response_content)
-            with open(filepath, "w") as json_file:
-                json.dump(response_json, json_file, indent=4)
-            print(f"Response saved to {filepath}")
-        except json.JSONDecodeError as e:
-            print("Error decoding JSON:", e)
-            filepath = os.path.join(self.script_dir, filename.replace(".json", ".txt"))
-            with open(filepath, "w") as text_file:
-                text_file.write(response_content)
-            print(f"Response saved to {filepath} as plain text")
+        while (True):
+            try:
+                response_json = json.loads(response_content)
+                with open(filepath, "w") as json_file:
+                    json.dump(response_json, json_file, indent=4)
+                print(f"Response saved to {filepath}")
+                return response_content
+            except json.JSONDecodeError as e:
+                print("Error decoding JSON:", e)
+                response_content = self.fix_output(response_content)
 
     # Generate Answers
     def generate_answers(self, questions):
-        prompt = json.dumps(questions)
+        while (True):
+            try:
+                prompt = json.dumps(questions)
+                break
+            except json.JSONDecodeError as e:
+                print("Error decoding JSON:", e)
+                questions = self.fix_output(questions)
         return self._generate_answers(prompt)
 
     # Generate Report
     def generate_report(self, questions_and_answers):
-        prompt = json.dumps(questions_and_answers)
+        while (True):
+            try:
+                prompt = json.dumps(questions_and_answers)
+                break
+            except json.JSONDecodeError as e:
+                print("Error decoding JSON:", e)
+                questions_and_answers = self.fix_output(questions_and_answers)
         return self._generate_report(prompt)
-
 
 
 def main():
     # Test
-    api_key="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"
-    report_generator = PsychologicalReportGenerator(api_key)
+    report_generator = PsychologicalReportGenerator()
     # List of psychological tests
     psychological_tests = [
         "Psychological Test",
@@ -162,33 +187,35 @@ def main():
         "Substance Abuse Test",
         "General Mental Health Assessment"
     ]
+    for j in range(1, 21):
+        while (True):
+            # Display the list of tests
+            print("Please choose a test by entering the corresponding number:")
+            for i, test in enumerate(psychological_tests, start=1):
+                print(f"{i}. {test}")
 
-    while(True):
-        # Display the list of tests
-        print("Please choose a test by entering the corresponding number:")
-        for i, test in enumerate(psychological_tests, start=1):
-            print(f"{i}. {test}")
+            # Get user input
+            choice = j
+            print(f"iteration number {j} out of 20")
+            # Validate the input
+            if 1 <= choice <= len(psychological_tests):
+                selected_test = psychological_tests[choice - 1]
+                print(f"You have selected: {selected_test}")
+                break
+            else:
+                print("Invalid choice. Please enter a number between 1 and", len(psychological_tests))
 
-        # Get user input
-        choice = int(input("Enter the number of the test you want to take: "))
+        questions = report_generator.generate_questions()
+        print(f"Questions generated:{questions}")
 
-        # Validate the input
-        if 1 <= choice <= len(psychological_tests):
-            selected_test = psychological_tests[choice - 1]
-            print(f"You have selected: {selected_test}")
-            break
-        else:
-            print("Invalid choice. Please enter a number between 1 and", len(psychological_tests))
+        answers = report_generator.generate_answers(questions)
+        print(f"answers generated:{answers}")
 
-    questions = report_generator.generate_questions(selected_test)
-    print(f"Questions generated:{questions}")
-
-    answers = report_generator.generate_answers(questions)
-    print(f"answers generated:{answers}")
-
-    report = report_generator.generate_report(answers)
-    print(f"Report generated:{report}")
+        report = report_generator.generate_report(answers)
+        print(f"Report generated:{report}")
+        time.sleep(10)
+    print("7amdellah 3al salama w adr w latf")
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

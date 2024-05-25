@@ -15,7 +15,7 @@ class QuestionGeneratorThread(QThread):
     def run(self):
         try:
             Questions.clear()
-            jsonAnswer = json.loads(self.psychologicalReportGenerator.generate_questions(self.topic))
+            jsonAnswer = json.loads(self.psychologicalReportGenerator.generate_questions(questions_type=self.topic))
             for key, value in jsonAnswer.items():
                 Questions.append(value["Question"])
         except Exception:

@@ -3,6 +3,7 @@ import json
 import os
 import time
 
+
 class PsychologicalReportGenerator:
     def __init__(self, api_key="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", model="llama3-70b-8192"):
         self.client = Groq(api_key=api_key)
@@ -32,9 +33,9 @@ class PsychologicalReportGenerator:
 
         response_content = response.choices[0].message.content
         print("Response:", response_content)
-        self._save_response(response_content, "questions.json")
+        response_content = self._save_response(response_content, "questions.json")
         return response_content
-    
+
     def _generate_answers(self, prompt):
         response = self.client.chat.completions.create(
             messages=[
@@ -69,9 +70,9 @@ class PsychologicalReportGenerator:
         print("Response:", response_content)
         self._save_response(response_content, "answers.json")
         return response_content
-    
-    def fix_output(self,prompt):
-         response = self.client.chat.completions.create(
+
+    def fix_output(self, prompt):
+        response = self.client.chat.completions.create(
             messages=[
                 {
                     "role": "system",
@@ -87,7 +88,7 @@ class PsychologicalReportGenerator:
             ],
             model=self.model
         )
-         return response.choices[0].message.content
+        return response.choices[0].message.content
 
     def _generate_report(self, prompt):
         response = self.client.chat.completions.create(
@@ -120,17 +121,13 @@ class PsychologicalReportGenerator:
 
         response_content = response.choices[0].message.content
         print("Response:", response_content)
-        json_response=self._save_response(response_content, "report.json")
+        json_response = self._save_response(response_content, "report.json")
         return json_response
-    
 
-
-
-
-# Saving Response
+    # Saving Response
     def _save_response(self, response_content, filename):
         filepath = os.path.join(self.script_dir, filename)
-        while(True):
+        while (True):
             try:
                 response_json = json.loads(response_content)
                 with open(filepath, "w") as json_file:
@@ -139,32 +136,29 @@ class PsychologicalReportGenerator:
                 return response_content
             except json.JSONDecodeError as e:
                 print("Error decoding JSON:", e)
-                response_content=self.fix_output(response_content)
-        
+                response_content = self.fix_output(response_content)
 
-
-# Generate Answers
+    # Generate Answers
     def generate_answers(self, questions):
-        while(True):
+        while (True):
             try:
                 prompt = json.dumps(questions)
                 break
             except json.JSONDecodeError as e:
                 print("Error decoding JSON:", e)
-                questions=self.fix_output(questions)
+                questions = self.fix_output(questions)
         return self._generate_answers(prompt)
 
-# Generate Report
+    # Generate Report
     def generate_report(self, questions_and_answers):
-        while(True):
+        while (True):
             try:
                 prompt = json.dumps(questions_and_answers)
                 break
             except json.JSONDecodeError as e:
                 print("Error decoding JSON:", e)
-                questions_and_answers=self.fix_output(questions_and_answers)
+                questions_and_answers = self.fix_output(questions_and_answers)
         return self._generate_report(prompt)
-
 
 
 def main():
@@ -193,13 +187,13 @@ def main():
         "Substance Abuse Test",
         "General Mental Health Assessment"
     ]
-    for j in range(1,21):
-        while(True):
+    for j in range(1, 21):
+        while (True):
             # Display the list of tests
             print("Please choose a test by entering the corresponding number:")
             for i, test in enumerate(psychological_tests, start=1):
                 print(f"{i}. {test}")
-            
+
             # Get user input
             choice = j
             print(f"iteration number {j} out of 20")
