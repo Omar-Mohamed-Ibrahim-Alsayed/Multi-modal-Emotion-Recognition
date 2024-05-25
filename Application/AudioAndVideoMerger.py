@@ -80,7 +80,7 @@ class AudioAndVideoMerger(QThread):
 
         self.min_duration = min(self.video_duration, self.audio_duration)
         self.command_1 = [
-            "./ffmpeg/bin/ffmpeg",
+            "ffmpeg",
             "-sseof", str(-1.0 * self.min_duration),  # Input video file
             "-i", self.long_file,  # Input audio file
             "-t", str(self.min_duration),  # Copy video stream without re-encoding
@@ -90,7 +90,7 @@ class AudioAndVideoMerger(QThread):
         output_file_path = os.path.join(latest_session_dir, self.output_file)
 
         self.command_2 = [
-            "./ffmpeg/bin/ffmpeg",
+            "ffmpeg",
             "-i", self.short_file,  # Input video file
             "-i", self.temp,  # Input audio file
             "-c:v", "copy",  # Copy video stream without re-encoding
