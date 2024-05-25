@@ -15,11 +15,22 @@ class VideoPlayer(QWidget):
         btnSize = QSize(16, 16)
         videoWidget = QVideoWidget()
 
+        self.btn_style = """
+        QWidget {
+                border: none;
+                background-color: transparent;
+                color: white;
+                height: 20;
+                margin: 2px;
+            }
+        """
+
         self.playButton = QPushButton()
         self.playButton.setEnabled(False)
         self.playButton.setFixedHeight(24)
         self.playButton.setIconSize(btnSize)
         self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.playButton.setStyleSheet(self.btn_style)
         self.playButton.clicked.connect(self.play)
 
         self.positionSlider = QSlider(Qt.Horizontal)
