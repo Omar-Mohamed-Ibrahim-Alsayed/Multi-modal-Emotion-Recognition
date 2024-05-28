@@ -1,9 +1,8 @@
 from PyQt5.QtCore import Qt, QUrl, QSize
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtWidgets import (QHBoxLayout, QPushButton, QSlider, QStyle, QVBoxLayout, QWidget, QStatusBar)
-
+from PyQt5.QtWidgets import (QHBoxLayout, QPushButton, QSlider, QStyle, QVBoxLayout, QWidget, QStatusBar, QLabel)
 
 class VideoPlayer(QWidget):
 
@@ -12,15 +11,15 @@ class VideoPlayer(QWidget):
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 
-        btnSize = QSize(16, 16)
+        btnSize = QSize(24, 24)
         videoWidget = QVideoWidget()
 
         self.btn_style = """
-        QWidget {
+        QPushButton {
                 border: none;
                 background-color: transparent;
                 color: white;
-                height: 20;
+                height: 24px;
                 margin: 2px;
             }
         """
@@ -37,6 +36,17 @@ class VideoPlayer(QWidget):
         self.positionSlider.setRange(0, 0)
         self.positionSlider.sliderMoved.connect(self.setPosition)
 
+        self.volumeSlider = QSlider(Qt.Horizontal)
+        self.volumeSlider.setRange(0, 100)
+        self.volumeSlider.setValue(50)
+        self.volumeSlider.setFixedWidth(100)
+        self.volumeSlider.sliderMoved.connect(self.setVolume)
+        
+        self.volumeLabel = QLabel()
+        self.volumeLabel.setText("Volume")
+        self.volumeLabel.setFont(QFont("Noto Sans", 8))
+        self.volumeLabel.setStyleSheet("color: white;")
+
         self.statusBar = QStatusBar()
         self.statusBar.setFont(QFont("Noto Sans", 7))
         self.statusBar.setFixedHeight(14)
@@ -45,6 +55,8 @@ class VideoPlayer(QWidget):
         controlLayout.setContentsMargins(0, 0, 0, 0)
         controlLayout.addWidget(self.playButton)
         controlLayout.addWidget(self.positionSlider)
+        controlLayout.addWidget(self.volumeLabel)
+        controlLayout.addWidget(self.volumeSlider)
 
         layout = QVBoxLayout()
         layout.addWidget(videoWidget)
@@ -57,7 +69,6 @@ class VideoPlayer(QWidget):
         self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
         self.mediaPlayer.positionChanged.connect(self.positionChanged)
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
-        # self.mediaPlayer.error.connect(self.handleError)
         self.statusBar.showMessage("Ready")
 
     def set_mediafile(self, filename):
@@ -66,7 +77,6 @@ class VideoPlayer(QWidget):
                 QMediaContent(QUrl.fromLocalFile(filename)))
             self.playButton.setEnabled(True)
             self.statusBar.showMessage(filename)
-            # self.play()
 
     def clear(self):
         self.mediaPlayer.setMedia(QMediaContent(None))
@@ -93,6 +103,9 @@ class VideoPlayer(QWidget):
 
     def setPosition(self, position):
         self.mediaPlayer.setPosition(position)
+
+    def setVolume(self, volume):
+        self.mediaPlayer.setVolume(volume)
 
     def handleError(self):
         self.playButton.setEnabled(False)

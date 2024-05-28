@@ -10,6 +10,24 @@ class PsychologicalReportGenerator:
         self.model = model
         self.script_dir = os.path.dirname(os.path.realpath(__file__))
 
+    def validate_input(self,prompt):
+        response = self.client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": f"""You will Be provided with an input from the user your job is to determine If it is a psychological disorder/disease or not.
+                            The response must only be True or False so i can convert it into a boolean value.
+                                """  
+            },
+                {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        model=self.model
+    )
+        return strtobool(response.choices[0].message.content)
+
     def generate_questions(self, number_of_questions=8, questions_type="psychological"):
         response = self.client.chat.completions.create(
             messages=[

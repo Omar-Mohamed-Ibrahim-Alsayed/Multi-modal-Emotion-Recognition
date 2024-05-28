@@ -1,5 +1,4 @@
 import os.path
-import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtCore import pyqtSlot as Slot, QMutex
@@ -40,18 +39,16 @@ class QuestionsUI(QtWidgets.QWidget):
         self.next_btn = None
         self.mutex = QMutex()
         self.camera_thread = None
-        self.close_btn = None
-        self.open_btn = None
+        self.record_btn = None
         self.questionLabel = None
         self.VideoLabel = None
+        self.questionNumberLabel = None  # Label for question number
 
         self.init_ui()
         self.signals = 0
+        self.is_recording = False
 
     def init_ui(self):
-        # self.setFixedSize(640, 640)
-        # self.setWindowTitle("Camera FeedBack")
-        # self.widget = QtWidgets.QWidget(self)
         self.question_ui_requested_signal.connect(self.init_question_generators)
 
         self.grid_layout = QtWidgets.QGridLayout(self)
@@ -69,10 +66,13 @@ class QuestionsUI(QtWidgets.QWidget):
 
         self.grid_child_layout1 = QtWidgets.QHBoxLayout()
 
-        # self.grid_child_layout2 = QtWidgets.QHBoxLayout()
-        # self.grid_layout.addWidget(self.vlayout)
-
+        self.questionNumberLabel = QtWidgets.QLabel()  # Initialize the label for question number
+        self.questionNumberLabel.setAlignment(Qt.AlignCenter)
+        self.questionNumberLabel.setFont(QFont("Franklin Gothic Medium", 16, QFont.Bold))
+        self.questionNumberLabel.setStyleSheet("color: rgb(255, 255, 255)")
+        
         self.questionLabel = QtWidgets.QLabel()
+        self.questionLabel.setAlignment(Qt.AlignCenter)  # Set alignment to center
         self.hlayout1.addWidget(self.questionLabel)
 
         self.VideoLabel = QtWidgets.QLabel()
@@ -89,8 +89,7 @@ class QuestionsUI(QtWidgets.QWidget):
 
         self.hlayout2.addWidget(self.stackedWidget)
 
-        self.open_btn = QtWidgets.QPushButton("Start Recording", clicked=self.open_camera)
-        self.close_btn = QtWidgets.QPushButton("Stop Recording", clicked=self.close_camera)
+        self.record_btn = QtWidgets.QPushButton("Start Recording", clicked=self.toggle_recording)
         self.next_btn = QtWidgets.QPushButton("Next", clicked=self.next_question)
         self.prev_btn = QtWidgets.QPushButton("Back", clicked=self.prev_question)
         self.home_btn = QtWidgets.QPushButton("Home")
@@ -115,6 +114,7 @@ class QuestionsUI(QtWidgets.QWidget):
         self.hlayout2.setSizeConstraint(QLayout.SetDefaultConstraint)
         self.horizontalLayout_btns.setContentsMargins(10, 10, 10, 10)
 
+        self.vlayout.addWidget(self.questionNumberLabel)  # Add question number label to the layout
         self.vlayout.addLayout(self.hlayout1)
         self.vlayout.addLayout(self.hlayout2)
         self.vlayout.addLayout(self.horizontalLayout_btns)
@@ -132,14 +132,13 @@ class QuestionsUI(QtWidgets.QWidget):
         self.questionLabel.setFont(font)
         self.questionLabel.setStyleSheet(u"color: rgb(255, 255, 255)")
         self.questionLabel.setTextFormat(Qt.RichText)
-        self.questionLabel.setAlignment(Qt.AlignLeading | Qt.AlignLeft | Qt.AlignTop)
+        self.questionLabel.setAlignment(Qt.AlignCenter)  # Set alignment to center
         self.questionLabel.setMargin(25)
         self.questionLabel.setWordWrap(True)
 
         self.VideoLabel.setAlignment(Qt.AlignLeading | Qt.AlignCenter)
 
-        self.open_btn.setMinimumSize(QSize(150, 0))
-        self.close_btn.setMinimumSize(QSize(150, 0))
+        self.record_btn.setMinimumSize(QSize(150, 0))
         self.next_btn.setMinimumSize(QSize(150, 0))
         self.prev_btn.setMinimumSize(QSize(150, 0))
         self.home_btn.setMinimumSize(QSize(150, 0))
@@ -148,8 +147,7 @@ class QuestionsUI(QtWidgets.QWidget):
         self.font5 = QFont()
         self.font5.setFamily(u"Franklin Gothic Demi")
         self.font5.setPointSize(12)
-        self.open_btn.setFont(self.font5)
-        self.close_btn.setFont(self.font5)
+        self.record_btn.setFont(self.font5)
         self.next_btn.setFont(self.font5)
         self.prev_btn.setFont(self.font5)
         self.finish_btn.setFont(self.font5)
@@ -158,22 +156,21 @@ class QuestionsUI(QtWidgets.QWidget):
         self.btn_style_1 = """
             :hover {
                 background: white;
-                color: #495464;
+                color: #191970;
             }
     
             QWidget {
                 border-style: solid;
                 border-color: black;
                 border-radius: 20;
-                background-color: #495464;
+                background-color: #535C91;
                 color: white;
                 height: 40;
                 margin: 5px;
             }
         """
 
-        self.open_btn.setStyleSheet(self.btn_style_1)
-        self.close_btn.setStyleSheet(self.btn_style_1)
+        self.record_btn.setStyleSheet(self.btn_style_1)
         self.next_btn.setStyleSheet(self.btn_style_1)
         self.prev_btn.setStyleSheet(self.btn_style_1)
         self.finish_btn.setStyleSheet(self.btn_style_1)
@@ -189,22 +186,17 @@ class QuestionsUI(QtWidgets.QWidget):
         self.stackedWidget3.setFixedHeight(50)
         self.stackedWidget4.setFixedHeight(50)
 
-
         self.stackedWidget1.addWidget(self.home_btn)
         self.stackedWidget1.addWidget(self.prev_btn)
 
         self.stackedWidget2.addWidget(self.next_btn)
         self.stackedWidget2.addWidget(self.finish_btn)
 
-        self.stackedWidget3.addWidget(self.close_btn)
-        self.stackedWidget4.addWidget(self.open_btn)
+        self.stackedWidget3.addWidget(self.record_btn)
 
-        self.horizontalLayout_btns.addWidget(self.stackedWidget4)
         self.horizontalLayout_btns.addWidget(self.stackedWidget3)
         self.horizontalLayout_btns.addWidget(self.stackedWidget1)
         self.horizontalLayout_btns.addWidget(self.stackedWidget2)
-        # self.horizontalLayout_btns.setStretch(0, 1)
-        # self.horizontalLayout_btns.setStretch(1, 1)
 
     def init_question_generators(self):
         self.QuestionsGenerator = QuestionGenerator()
@@ -212,6 +204,14 @@ class QuestionsUI(QtWidgets.QWidget):
         self.stackedWidget1.setCurrentIndex(0)
         self.stackedWidget2.setCurrentIndex(0)
         self.next_question()
+
+    def toggle_recording(self):
+        if self.is_recording:
+            self.close_camera()
+        else:
+            self.open_camera()
+        self.is_recording = not self.is_recording
+        self.record_btn.setText("Stop Recording" if self.is_recording else "Start Recording")
 
     def open_camera(self):
         self.videoPlayer.clear()
@@ -229,9 +229,13 @@ class QuestionsUI(QtWidgets.QWidget):
         self.audio_thread.set_outfile(str(self.QuestionsGenerator.get_index()) + ".wav")
         self.audio_thread.start()
 
+    def update_question_number_label(self):
+        self.questionNumberLabel.setText(f"Question {self.QuestionsGenerator.get_index() + 1}")
+
     def next_question(self):
         try:
             self.questionLabel.setText(next(self.QuestionsGeneratorIter))
+            self.update_question_number_label()  # Update question number label
             if os.path.exists("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4"):
                 self.videoPlayer.set_mediafile("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
                 self.stackedWidget.setCurrentIndex(1)
@@ -251,6 +255,7 @@ class QuestionsUI(QtWidgets.QWidget):
     def prev_question(self):
         try:
             self.questionLabel.setText(self.QuestionsGenerator.prev())
+            self.update_question_number_label()  # Update question number label
             if os.path.exists("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4"):
                 self.videoPlayer.set_mediafile("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
                 self.stackedWidget.setCurrentIndex(1)
@@ -262,7 +267,6 @@ class QuestionsUI(QtWidgets.QWidget):
                 self.stackedWidget2.setCurrentIndex(0)
             if self.QuestionsGenerator.get_index() == 0:
                 self.stackedWidget1.setCurrentIndex(0)
-
 
         except StopIteration:
             msg = QtWidgets.QMessageBox()
@@ -298,15 +302,8 @@ class QuestionsUI(QtWidgets.QWidget):
     def clear_player(self):
         self.videoPlayer.clear()
 
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     main_window = QuestionsUI()
-    sys.exit(app.exec())
-
-"""
-Task 1: add audio recording with the video Done
-Task 2: display the recording for revision on GUI Done
-Task 3: beautify GUI
-Task 4: Generate Questions Dynamically
-"""
+    main_window.show()
+    sys.exit(app.exec_())

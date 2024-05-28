@@ -135,10 +135,10 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>Mentalist</string>
+   <string>PsychologyPalAssistant</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(111, 111, 255)</string>
+   <string notr="true">background-color: #2B2B2B</string> <!--Main Background Color-->
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
@@ -411,7 +411,7 @@
                <enum>Qt::RichText</enum>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+               <set>Qt::AlignLeading|Qt::AlignCenter|Qt::AlignTop</set>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
@@ -545,7 +545,7 @@ QWidget {
 border-style: solid;
 border-color: black;
 border-radius: 37;
-background-color: #495464;
+background-color: #535C91; <!--Start Button Background Color-->
 color: white;
 height: 75;
 }
@@ -752,30 +752,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                    <string notr="true">color:white;</string>
                   </property>
                   <property name="text">
-                   <string>Can you describe your overall mood and emotional state over the past two weeks?
-
-Happy: Over the past two weeks, my overall mood has been quite positive. I've generally felt content and upbeat.
-What activities or hobbies have you found less enjoyable or lost interest in recently? Can you elaborate on how this has affected you?
-
-Calm: I haven't really lost interest in any activities or hobbies recently. I still enjoy my regular routines and hobbies as much as before.
-Have you experienced any changes in your sleep patterns, such as difficulty falling asleep, staying asleep, or sleeping too much? Please describe.
-
-Neutral: My sleep patterns have been stable. I haven't had any significant issues with falling asleep, staying asleep, or oversleeping.
-How has your energy level been lately? Can you recall any specific instances where you felt unusually tired or energetic?
-
-Surprised: My energy levels have been quite steady. There haven't been any notable instances where I felt unusually tired or particularly energetic.
-Have there been any changes in your appetite or eating habits? If so, how have these changes impacted you physically and emotionally?
-
-Neutral: My appetite and eating habits have remained consistent. There haven't been any changes that have impacted me physically or emotionally.
-Can you describe any recent feelings of guilt, worthlessness, or self-criticism? How often do these feelings occur and in what situations?
-
-Calm: I haven't experienced any significant feelings of guilt, worthlessness, or self-criticism recently. I feel generally confident and content.
-Have you found it difficult to concentrate or make decisions recently? Please provide examples of situations where this has been a problem.
-
-Neutral: I haven't had any trouble concentrating or making decisions lately. My focus and decision-making abilities have been as good as usual.
-Have you had any thoughts about self-harm or that life isn't worth living? If so, can you describe these thoughts and how often they occur?
-
-Happy: I haven't had any thoughts about self-harm or feelings that life isn't worth living. My outlook on life has been quite positive.</string>
+                   <string></string>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
@@ -842,7 +819,7 @@ QWidget {
 border-style: solid;
 border-color: black;
 border-radius: 20;
-background-color: #495464;
+background-color: #535C91;  <!--New test Button Background Color-->
 color: white;
 height: 40;
 margin: 5px;
@@ -850,6 +827,41 @@ margin: 5px;
               </property>
               <property name="text">
                <string>Start New Test</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="savebtn">
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Franklin Gothic Demi</family>
+                <pointsize>12</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">:hover {
+	background: white;
+	color: #495464;
+}
+
+QWidget {
+border-style: solid;
+border-color: black;
+border-radius: 20;
+background-color: #535C91;  <!--save pdf Button Background Color-->
+color: white;
+height: 40;
+margin: 5px;
+}</string>
+              </property>
+              <property name="text">
+               <string>Save Report</string>
               </property>
              </widget>
             </item>
@@ -877,7 +889,7 @@ QWidget {
 border-style: solid;
 border-color: black;
 border-radius: 20;
-background-color: #495464;
+background-color: #535C91; <!--Back Button Background Color-->
 color: white;
 height: 40;
 margin: 5px;

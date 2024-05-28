@@ -52,7 +52,3 @@ class QuestionGenerator:
 
     def get_index(self):
         return self.indx
-
-# if __name__ == '__main__':
-#     GeminiAPIRequester = GeminiAPIRequester()
-#     GeminiAPIRequester.generateQuestionList("phobia")

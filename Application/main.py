@@ -1,11 +1,16 @@
 import sys
-
+import threading
 from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from questions_ui import QuestionsUI
 from QuestionsGenerator import *
+from llm import PsychologicalReportGenerator
+import markdown2
+from xhtml2pdf import pisa
+import io
+
 
 pages = {
     "homepage": 0,
@@ -14,10 +19,10 @@ pages = {
     "loading": 3
 }
 
-
 class MainApp(QMainWindow):
 
-    processing_signal = Signal(bool)
+    processing_signal = Signal(bool, str)  # Signal with an additional parameter for the message
+    update_label_signal = Signal(str)
 
     def __init__(self):
         super(MainApp, self).__init__()
@@ -39,7 +44,6 @@ class MainApp(QMainWindow):
         self.vlayout = QVBoxLayout()
 
         self.loading_label = QLabel()
-        self.loading_label.setText("Processing...")
         self.loading_label.setAlignment(Qt.AlignLeading | Qt.AlignCenter)
         self.loading_label.setFont(font)
         self.loading_label.setStyleSheet(u"color: rgb(255, 255, 255)")
@@ -54,10 +58,11 @@ class MainApp(QMainWindow):
         self.disorder_input = self.findChild(QLineEdit, "lineEdit_2")
         self.new_test_btn = self.findChild(QPushButton, "newTest_btn")
         self.back_final_btn = self.findChild(QPushButton, "backbtn")
+        self.save_btn = self.findChild(QPushButton, "savebtn")
 
         self.new_test_btn.clicked.connect(self.go_to_home)
+        self.save_btn.clicked.connect(self.save_as_pdf)
         self.back_final_btn.clicked.connect(self.go_to_question)
-
 
         self.disorder_input.setTextMargins(2, 2, 2, 2)
 
@@ -67,6 +72,7 @@ class MainApp(QMainWindow):
         self.stackedPages.addWidget(self.loadingScreen)
 
         self.processing_signal.connect(self.go_to_loading)
+        self.update_label_signal.connect(self.update_analysis_label)
 
         self.finish_btn_question = self.questionScreen.finish_btn
         self.home_btn_question = self.questionScreen.home_btn
@@ -83,11 +89,17 @@ class MainApp(QMainWindow):
             msg.setText("Disorder input field cannot be empty!!")
             msg.exec_()
             return
-        self.generate_questions_thread.set_topic(self.disorder_input.text())
-        self.processing_signal.emit(True)
-        self.generate_questions_thread.start()
-        self.generate_questions_thread.finished.connect(self.go_to_question)
-
+        input_validator = PsychologicalReportGenerator()
+        if (input_validator.validate_input(self.disorder_input.text())):
+            self.generate_questions_thread.set_topic(self.disorder_input.text())
+            self.processing_signal.emit(True, "Generating questions...")  # Emit signal with custom message
+            self.generate_questions_thread.start()
+            self.generate_questions_thread.finished.connect(self.go_to_question)
+        else:
+            msg = QMessageBox()
+            msg.setText("This is not a valid Disease/Disorder")
+            msg.exec_()
+            return
 
     def perform_analysis(self):
         pass
@@ -96,15 +108,88 @@ class MainApp(QMainWindow):
         self.questionScreen.question_ui_requested_signal.emit(True)
         self.stackedPages.setCurrentIndex(pages["questions"])
 
-    def go_to_loading(self):
+    def go_to_loading(self, status, message):
+        self.loading_label.setText(message)  # Update loading message
         self.stackedPages.setCurrentIndex(pages["loading"])
 
     def go_to_home(self):
         self.stackedPages.setCurrentIndex(pages["homepage"])
 
     def go_to_analysis(self):
+        self.processing_signal.emit(True, "Generating report...")  # Emit signal with custom message
+        threading.Thread(target=self.load_analysis_report).start()
+
+    def load_analysis_report(self):
+        report_generator = PsychologicalReportGenerator()
+        markdown_text = report_generator.generate_report("""
+        {
+            "Question1": {
+                "Question": "Describe a situation where you felt completely overwhelmed, and how did you cope with it?",
+                "Answer": "During my final year of college, I had multiple projects and exams piling up, and I felt completely overwhelmed. I took a step back, prioritized my tasks, and delegated some of the workload to my teammates. I also made sure to take breaks and practice self-care to avoid burnout.",
+                "Emotion": "Calm"
+            },
+            "Question2": {
+                "Question": "What is the most spontaneous thing you have ever done, and would you do it again?",
+                "Answer": "I once decided to take a road trip with friends to a nearby city on a whim. It was amazing, and I would love to do it again. The freedom and excitement of not planning anything and just going with the flow was exhilarating.",
+                "Emotion": "Happy"
+            },
+            "Question3": {
+                "Question": "Think of a person you admire, what qualities do they possess that you wish you had, and how can you work on developing those qualities?",
+                "Answer": "I admire my grandmother's kindness and empathy towards others. I wish I had her ability to connect with people on a deeper level. I can work on developing this quality by actively listening to others and being more present in my interactions.",
+                "Emotion": "Sad"
+            },
+            "Question4": {
+                "Question": "Tell me about a time when you had to make a difficult decision, what was the outcome, and would you make the same choice again?",
+                "Answer": "I had to choose between two job offers, one with a higher salary and one with better work-life balance. I chose the latter, and it was the best decision I ever made. I'd make the same choice again because my mental health and happiness are more valuable to me than the extra money.",
+                "Emotion": "Calm"
+            },
+            "Question5": {
+                "Question": "How do you handle criticism or negative feedback, and can you give me an example from your past?",
+                "Answer": "I try to separate my self-worth from the criticism and focus on the constructive aspects. In a previous project, I received negative feedback on my presentation skills, which initially made me defensive. However, I took the feedback to heart, worked on improving, and saw significant growth in my abilities.",
+                "Emotion": "Neutral"
+            },
+            "Question6": {
+                "Question": "Describe a moment when you felt a strong sense of belonging, where was it, and what made it so special?",
+                "Answer": "During a volunteer trip to a rural village, I felt a strong sense of belonging with the community and my fellow volunteers. We worked together, shared stories, and supported each other, creating an unforgettable bond.",
+                "Emotion": "Happy"
+            },
+            "Question7": {
+                "Question": "What is something you used to believe in strongly when you were younger, but no longer believe in, and what caused you to change your mind?",
+                "Answer": "I used to believe that success was solely about achieving a high-paying job. However, as I grew older, I realized that success is more about finding fulfillment and happiness in what I do. This change in perspective was influenced by my experiences and seeing the unhappiness of others who were stuck in unfulfilling careers.",
+                "Emotion": "Surprised"
+            },
+            "Question8": {
+                "Question": "What do you value more, being liked by others or being true to yourself, and can you explain why?",
+                "Answer": "I value being true to myself more. I've learned that trying to appease others can lead to internal conflict and unhappiness. Being true to myself allows me to live authentically and find self-acceptance.",
+                "Emotion": "Calm"
+            }
+        }
+        """)
+
+        # Convert Markdown to HTML
+        html_content = markdown2.markdown(markdown_text)
+        
+        # Emit the signal to update the QLabel with the HTML content
+        self.update_label_signal.emit(html_content)
+
+    def update_analysis_label(self, html_content):
+        analysis_label = self.findChild(QLabel, "Analysis_Label")
+        analysis_label.setText(html_content)
         self.stackedPages.setCurrentIndex(pages["analysis"])
 
+
+    def save_as_pdf(self):
+        analysis_label = self.findChild(QLabel, "Analysis_Label")
+        html_content = analysis_label.text()
+        # Get the directory where the script is located
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        output_pdf_path = os.path.join(app_dir, "analysis_report.pdf")
+        try:
+            with open(output_pdf_path, "wb") as f:
+                pisa.CreatePDF(io.StringIO(html_content), dest=f)
+            QMessageBox.information(self, "Success", f"<font color='white'>Report saved as {output_pdf_path}</font>")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"<font color='white'>Failed to save PDF: {str(e)}</font>")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
