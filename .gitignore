@@ -79,6 +79,9 @@ docs/_build/
 .pybuilder/
 target/
 ./Application/ffmpeg
+./Application/0.wav
+./Application/0.mp4
+./Application/f0.pp4
 # Jupyter Notebook
 .ipynb_checkpoints
 
