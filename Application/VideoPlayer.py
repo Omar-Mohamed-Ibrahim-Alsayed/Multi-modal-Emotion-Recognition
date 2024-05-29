@@ -1,9 +1,10 @@
-from PyQt5.QtCore import Qt, QUrl, QSize
+from PyQt5.QtCore import Qt, QUrl, QSize, QFileInfo
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from PyQt5.QtWidgets import (QHBoxLayout, QPushButton, QSlider, QStyle, QVBoxLayout, QWidget, QStatusBar, QLabel)
 
+import os
 class VideoPlayer(QWidget):
 
     def __init__(self, parent=None):
@@ -72,9 +73,14 @@ class VideoPlayer(QWidget):
         self.statusBar.showMessage("Ready")
 
     def set_mediafile(self, filename):
-        if filename != '':
-            self.mediaPlayer.setMedia(
-                QMediaContent(QUrl.fromLocalFile(filename)))
+        if filename:
+            # Handle different platforms
+            if os.name == 'nt':  # Windows
+                media_url = QUrl.fromLocalFile(filename)
+            else:  # Linux and other platforms
+                media_url = QUrl.fromLocalFile(QFileInfo(filename).absoluteFilePath())
+            
+            self.mediaPlayer.setMedia(QMediaContent(media_url))
             self.playButton.setEnabled(True)
             self.statusBar.showMessage(filename)
 

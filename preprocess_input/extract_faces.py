@@ -17,12 +17,12 @@ def extract_faces(video_name):
   mtcnn = MTCNN(image_size=(720, 1280), device=device)
 
   # Path to the single video you want to process
-  video_path = f'./Examples/{video_name}.mp4'
+  video_path = f'./Application/{video_name}.mp4'
 
   # Define processing parameters
   save_frames = 15
   input_fps = 30
-  save_length = 5  # seconds
+  save_length = 10  # seconds
   save_avi = True
   failed_videos = []
 
@@ -49,7 +49,7 @@ def extract_faces(video_name):
   save_fps = save_frames // (desired_frames // input_fps)
 
   if save_avi:
-      out = cv2.VideoWriter(f'./Examples/{video_name}.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), save_fps, (224, 224))
+      out = cv2.VideoWriter(f'./Application/{video_name}.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), save_fps, (224, 224))
 
   numpy_video = []
   frame_ctr = 0
@@ -99,7 +99,7 @@ def extract_faces(video_name):
       out.release()
 
   # Save processed frames as numpy array
-  np.save(f'./Examples/{video_name}.npy', np.array(numpy_video))
+  np.save(f'./Application/{video_name}.npy', np.array(numpy_video))
 
   # Check for any errors during video processing
   if len(numpy_video) != save_frames:
@@ -120,7 +120,7 @@ def extract_faces2(video_name):
   mtcnn = MTCNN(image_size=(720, 1280), device=device)
 
   # Path to the single video you want to process
-  video_path = f'./Examples/{video_name}.mp4'
+  video_path = f'./Application/{video_name}.mp4'
 
   # Define processing parameters
   save_frames = 15*8
@@ -151,7 +151,7 @@ def extract_faces2(video_name):
   frames_to_select = select_distributed(save_frames, desired_frames)
   save_fps = save_frames // (desired_frames // input_fps)
   if save_avi:
-    out = cv2.VideoWriter(f'./Examples/{video_name}.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), save_fps, (224, 224))
+    out = cv2.VideoWriter(f'./Application/{video_name}.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), save_fps, (224, 224))
 
   numpy_video = []
   frame_ctr = 0

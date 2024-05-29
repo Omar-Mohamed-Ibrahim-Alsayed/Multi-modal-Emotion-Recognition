@@ -5,10 +5,10 @@ import librosa
 
 def extract_audios(video_name):
  
-  input_video_path = f'./Examples/{video_name}.mp4'
-  output_audio_path = f'./Examples/{video_name}.wav'
-  preprocessed_audio_path = f'./Examples/{video_name}.wav'
-  target_time = 1  # sec
+  input_video_path = f'./Application/{video_name}.mp4'
+  output_audio_path = f'./Application/{video_name}.wav'
+  preprocessed_audio_path = f'./Application/{video_name}.wav'
+  target_time = 10  # sec
 
   # Load the input video and extract audio
   video_clip = mp.VideoFileClip(input_video_path)
