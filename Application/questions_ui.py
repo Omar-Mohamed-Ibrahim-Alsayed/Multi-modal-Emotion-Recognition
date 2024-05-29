@@ -74,10 +74,10 @@ class QuestionsUI(QtWidgets.QWidget):
         self.questionLabel = QtWidgets.QLabel()
         self.questionLabel.setAlignment(Qt.AlignCenter)  # Set alignment to center
         self.hlayout1.addWidget(self.questionLabel)
-
+    
         self.VideoLabel = QtWidgets.QLabel()
+        self.VideoLabel.setFixedSize(640, 480)
         self.grid_child_layout1.addWidget(self.VideoLabel)
-
         self.videoPlayer = VideoPlayer()
 
         self.grid_page1.addLayout(self.grid_child_layout1, 0, 0, 1, 1)
@@ -229,6 +229,18 @@ class QuestionsUI(QtWidgets.QWidget):
         self.audio_thread.set_outfile(str(self.QuestionsGenerator.get_index()) + ".wav")
         self.audio_thread.start()
 
+    def get_latest_session_directory(self):
+        session_dir = "session"
+        if not os.path.exists(session_dir):
+            return None
+
+        subdirs = [d for d in os.listdir(session_dir) if os.path.isdir(os.path.join(session_dir, d))]
+        if not subdirs:
+            return None
+
+        latest_subdir = max(subdirs, key=lambda d: os.path.getmtime(os.path.join(session_dir, d)))
+        return os.path.join(session_dir, latest_subdir)
+
     def update_question_number_label(self):
         self.questionNumberLabel.setText(f"Question {self.QuestionsGenerator.get_index() + 1}")
 
@@ -256,8 +268,12 @@ class QuestionsUI(QtWidgets.QWidget):
         try:
             self.questionLabel.setText(self.QuestionsGenerator.prev())
             self.update_question_number_label()  # Update question number label
-            if os.path.exists("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4"):
-                self.videoPlayer.set_mediafile("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
+            
+            latest_directory = self.get_latest_session_directory()
+            media_file = os.path.join(latest_directory, "f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
+            
+            if latest_directory and os.path.exists(media_file):
+                self.videoPlayer.set_mediafile(media_file)
                 self.stackedWidget.setCurrentIndex(1)
             else:
                 self.videoPlayer.clear()
@@ -295,10 +311,13 @@ class QuestionsUI(QtWidgets.QWidget):
         self.mutex.unlock()
 
     def show_player(self):
-        self.videoPlayer.set_mediafile("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
-        self.stackedWidget.setCurrentIndex(1)
-        self.videoPlayer.play()
-
+        latest_directory = self.get_latest_session_directory()
+        if latest_directory:
+            media_file = os.path.join(latest_directory, "f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
+            self.videoPlayer.set_mediafile(media_file)
+            self.stackedWidget.setCurrentIndex(1)
+            self.videoPlayer.play()
+            
     def clear_player(self):
         self.videoPlayer.clear()
 

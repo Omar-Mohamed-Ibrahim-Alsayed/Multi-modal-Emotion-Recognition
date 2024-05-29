@@ -1,7 +1,8 @@
 import sys
 import wave
-
 import pyaudio
+import os
+from datetime import datetime
 from PyQt5.QtCore import QThread, pyqtSignal as Signal
 
 
@@ -21,6 +22,22 @@ class AudioCaptureThread(QThread):
         super().__init__()
         self.close_signal.connect(self.close_audio)
 
+    def get_latest_session_directory(self):
+        session_dir = "session"
+        if not os.path.exists(session_dir):
+            os.mkdir(session_dir)
+            return session_dir
+
+        subdirs = [d for d in os.listdir(session_dir) if os.path.isdir(os.path.join(session_dir, d))]
+        if not subdirs:
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            session_subdir = os.path.join(session_dir, current_time)
+            os.mkdir(session_subdir)
+            return session_subdir
+
+        latest_subdir = max(subdirs, key=lambda d: datetime.strptime(d, "%Y-%m-%d_%H-%M-%S"))
+        return os.path.join(session_dir, latest_subdir)
+
     def run(self):
         try:
             p = pyaudio.PyAudio()
@@ -39,7 +56,11 @@ class AudioCaptureThread(QThread):
             stream.stop_stream()
             stream.close()
             p.terminate()
-            wf = wave.open(self.filename, 'wb')
+
+            latest_session_dir = self.get_latest_session_directory()
+            output_file_path = os.path.join(latest_session_dir, self.filename)
+            
+            wf = wave.open(output_file_path, 'wb')
             wf.setnchannels(self.channels)
             wf.setsampwidth(p.get_sample_size(self.format))
             wf.setframerate(self.rate)

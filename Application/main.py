@@ -1,5 +1,7 @@
 import sys
+import os
 import threading
+from datetime import datetime
 from PyQt5.QtCore import Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
@@ -80,7 +82,37 @@ class MainApp(QMainWindow):
         self.finish_btn_question.clicked.connect(self.go_to_analysis)
         self.home_btn_question.clicked.connect(self.go_to_home)
 
+        self.session_dir = self.create_session_directory()
+        self.log_file_path = os.path.join(self.session_dir, "session_log.txt")
+
         self.show()
+
+    def create_session_directory(self):
+        session_dir = "session"
+        if not os.path.exists(session_dir):
+            os.mkdir(session_dir)
+        
+        current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        session_subdir = os.path.join(session_dir, current_time)
+        os.mkdir(session_subdir)
+
+        return session_subdir
+
+    def log_event(self, message):
+        with open(self.log_file_path, "a") as log_file:
+            log_file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {message}\n")
+
+    def get_latest_session_directory(self):
+        session_dir = "session"
+        if not os.path.exists(session_dir):
+            return None
+        
+        subdirs = [os.path.join(session_dir, d) for d in os.listdir(session_dir) if os.path.isdir(os.path.join(session_dir, d))]
+        if not subdirs:
+            return None
+        
+        latest_subdir = max(subdirs, key=os.path.getmtime)
+        return latest_subdir
 
     def generate_questions(self):
         self.generate_questions_thread = QuestionGeneratorThread()
@@ -88,17 +120,20 @@ class MainApp(QMainWindow):
             msg = QMessageBox()
             msg.setText("Disorder input field cannot be empty!!")
             msg.exec_()
+            self.log_event("Disorder input field was empty.")
             return
         input_validator = PsychologicalReportGenerator()
-        if (input_validator.validate_input(self.disorder_input.text())):
+        if input_validator.validate_input(self.disorder_input.text()):
             self.generate_questions_thread.set_topic(self.disorder_input.text())
             self.processing_signal.emit(True, "Generating questions...")  # Emit signal with custom message
             self.generate_questions_thread.start()
             self.generate_questions_thread.finished.connect(self.go_to_question)
+            self.log_event("Started generating questions for disorder: " + self.disorder_input.text())
         else:
             msg = QMessageBox()
             msg.setText("This is not a valid Disease/Disorder")
             msg.exec_()
+            self.log_event("Invalid Disease/Disorder entered: " + self.disorder_input.text())
             return
 
     def perform_analysis(self):
@@ -107,17 +142,23 @@ class MainApp(QMainWindow):
     def go_to_question(self):
         self.questionScreen.question_ui_requested_signal.emit(True)
         self.stackedPages.setCurrentIndex(pages["questions"])
+        self.log_event("Navigated to question page.")
 
     def go_to_loading(self, status, message):
         self.loading_label.setText(message)  # Update loading message
         self.stackedPages.setCurrentIndex(pages["loading"])
+        self.log_event("Navigated to loading page with message: " + message)
 
     def go_to_home(self):
+        self.session_dir = self.create_session_directory()
+        self.log_file_path = os.path.join(self.session_dir, "session_log.txt")
         self.stackedPages.setCurrentIndex(pages["homepage"])
+        self.log_event("Navigated to home page.")
 
     def go_to_analysis(self):
         self.processing_signal.emit(True, "Generating report...")  # Emit signal with custom message
         threading.Thread(target=self.load_analysis_report).start()
+        self.log_event("Started generating analysis report.")
 
     def load_analysis_report(self):
         report_generator = PsychologicalReportGenerator()
@@ -171,25 +212,33 @@ class MainApp(QMainWindow):
         
         # Emit the signal to update the QLabel with the HTML content
         self.update_label_signal.emit(html_content)
+        self.log_event("Analysis report generated.")
 
     def update_analysis_label(self, html_content):
         analysis_label = self.findChild(QLabel, "Analysis_Label")
         analysis_label.setText(html_content)
         self.stackedPages.setCurrentIndex(pages["analysis"])
-
+        self.log_event("Navigated to analysis page.")
 
     def save_as_pdf(self):
         analysis_label = self.findChild(QLabel, "Analysis_Label")
         html_content = analysis_label.text()
-        # Get the directory where the script is located
-        app_dir = os.path.dirname(os.path.abspath(__file__))
-        output_pdf_path = os.path.join(app_dir, "analysis_report.pdf")
+        # Get the latest session directory
+        latest_session_dir = self.get_latest_session_directory()
+        if not latest_session_dir:
+            QMessageBox.critical(self, "Error", "<font color='white'>No session directory found</font>")
+            self.log_event("Failed to save PDF: No session directory found")
+            return
+
+        output_pdf_path = os.path.join(latest_session_dir, "analysis_report.pdf")
         try:
             with open(output_pdf_path, "wb") as f:
                 pisa.CreatePDF(io.StringIO(html_content), dest=f)
             QMessageBox.information(self, "Success", f"<font color='white'>Report saved as {output_pdf_path}</font>")
+            self.log_event(f"Report saved as {output_pdf_path}")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"<font color='white'>Failed to save PDF: {str(e)}</font>")
+            self.log_event(f"Failed to save PDF: {str(e)}")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

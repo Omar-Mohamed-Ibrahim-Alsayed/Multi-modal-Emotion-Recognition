@@ -138,7 +138,7 @@ class PsychologicalReportGenerator:
         )
 
         response_content = response.choices[0].message.content
-        print("Response:", response_content)
+        #print("Response:", response_content)
         #  json_response = self._save_response(response_content, "report.json")
         return response_content
 

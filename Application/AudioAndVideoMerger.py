@@ -2,10 +2,10 @@ import contextlib
 import subprocess
 import sys
 import wave
-
+import os
+from datetime import datetime
 import cv2
 from PyQt5.QtCore import QThread
-
 
 class AudioAndVideoMerger(QThread):
 
@@ -33,23 +33,50 @@ class AudioAndVideoMerger(QThread):
         data = cv2.VideoCapture(fname)
         frames = data.get(cv2.CAP_PROP_FRAME_COUNT)
         fps = data.get(cv2.CAP_PROP_FPS)
+
+        # Check if fps is zero or negative
+        if fps <= 0:
+            # Handle the case where fps is invalid
+            print("Invalid FPS value:", fps)
+            return None
+
         duration = frames / fps
         return duration
 
+    def get_latest_session_directory(self):
+        session_dir = "session"
+        if not os.path.exists(session_dir):
+            os.mkdir(session_dir)
+            return session_dir
+
+        subdirs = [d for d in os.listdir(session_dir) if os.path.isdir(os.path.join(session_dir, d))]
+        if not subdirs:
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            session_subdir = os.path.join(session_dir, current_time)
+            os.mkdir(session_subdir)
+            return session_subdir
+
+        latest_subdir = max(subdirs, key=lambda d: datetime.strptime(d, "%Y-%m-%d_%H-%M-%S"))
+        return os.path.join(session_dir, latest_subdir)
+
     def run(self):
-        self.video_duration = self.get_video_duration(self.video_file)
-        self.audio_duration = self.get_audio_duration(self.audio_file)
+        latest_session_dir = self.get_latest_session_directory()
+        audio_file_path = os.path.join(latest_session_dir, self.audio_file)
+        video_file_path = os.path.join(latest_session_dir, self.video_file)
+        
+        self.video_duration = self.get_video_duration(video_file_path)
+        self.audio_duration = self.get_audio_duration(audio_file_path)
 
         self.temp = ""
 
         if self.video_duration > self.audio_duration:
-            self.long_file = self.video_file
-            self.short_file = self.audio_file
+            self.long_file = video_file_path
+            self.short_file = audio_file_path
         else:
-            self.long_file = self.audio_file
-            self.short_file = self.video_file
+            self.long_file = audio_file_path
+            self.short_file = video_file_path
 
-        self.temp = "t" + self.long_file
+        self.temp = "t" + os.path.basename(self.long_file)
 
         self.min_duration = min(self.video_duration, self.audio_duration)
         self.command_1 = [
@@ -60,12 +87,14 @@ class AudioAndVideoMerger(QThread):
             "-y", self.temp,
         ]
 
+        output_file_path = os.path.join(latest_session_dir, self.output_file)
+
         self.command_2 = [
             "./ffmpeg/bin/ffmpeg",
             "-i", self.short_file,  # Input video file
             "-i", self.temp,  # Input audio file
             "-c:v", "copy",  # Copy video stream without re-encoding
-            "-y", self.output_file,  # Output file path
+            "-y", output_file_path,  # Output file path
         ]
 
         try:

@@ -1,7 +1,8 @@
 import sys
-
 import cv2
 import imutils
+import os
+from datetime import datetime  
 from PyQt5.QtCore import QThread, pyqtSignal as Signal
 from PyQt5.QtGui import QImage
 
@@ -22,20 +23,43 @@ class VideoCaptureThread(QThread):
     def set_outfile(self, filename):
         self.output_file = filename
 
+    def get_latest_session_directory(self):
+        session_dir = "session"
+        if not os.path.exists(session_dir):
+            os.mkdir(session_dir)
+            return session_dir
+
+        subdirs = [d for d in os.listdir(session_dir) if os.path.isdir(os.path.join(session_dir, d))]
+        if not subdirs:
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            session_subdir = os.path.join(session_dir, current_time)
+            os.mkdir(session_subdir)
+            return session_subdir
+
+        latest_subdir = max(subdirs, key=lambda d: datetime.strptime(d, "%Y-%m-%d_%H-%M-%S"))
+        return os.path.join(session_dir, latest_subdir)
+
     def run(self):
         try:
-            self.out = cv2.VideoWriter(self.output_file, self.fourcc, 30.0, (640, 480))
+            latest_session_dir = self.get_latest_session_directory()
+            output_file_path = os.path.join(latest_session_dir, self.output_file)
+
+            self.out = cv2.VideoWriter(output_file_path, self.fourcc, 30.0, (640, 480))
             self.cap = cv2.VideoCapture(0)
-            while self.cap.isOpened() and not self.close_received:
+
+            # Check if the video capture is successful
+            if not self.cap.isOpened():
+                raise ValueError("Failed to open video capture.")
+
+            while not self.close_received:
                 _, frame = self.cap.read()
                 self.out.write(frame)
                 frame = self.cvimage_to_label(frame)
                 self.frame_signal.emit(frame)
             self.cap.release()
             self.out.release()
-        except:
-            (type, value, traceback) = sys.exc_info()
-            sys.excepthook(type, value, traceback)
+        except Exception as e:
+            print(f"Error in VideoCaptureThread: {e}")
 
     def close_recording(self):
         self.close_received = True
