@@ -143,6 +143,8 @@ def print_emotion(output_tensor):
     # Print the corresponding emotion
     print(f"Predicted Emotion: {emotions[max_index]}")
 
+    return emotions[max_index]
+
 
 def predict(video_name):
     start_time = time.time()
@@ -191,7 +193,7 @@ def predict(video_name):
 
     print(f'all paths : {video_audio_paths}')
         
-    
+    emotions = []
 
     # Loop over each pair of video and audio paths
     for video_path, audio_path in video_audio_paths:
@@ -208,11 +210,13 @@ def predict(video_name):
 
         print(output.data)
 
-        print_emotion(output.data)
+        emotions.append(print_emotion(output.data))
 
     end_time = time.time()  # End the timer
     elapsed_time = end_time - start_time  # Calculate elapsed time
         
     print("Full time taken {:.4f} seconds".format(elapsed_time))
+
+    return emotions
 
 predict('2024-05-29_22-25-59')
