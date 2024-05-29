@@ -2,12 +2,14 @@ import moviepy.editor as mp
 import soundfile as sf
 import numpy as np
 import librosa
+import os
 
 def extract_audios(video_name):
  
-  input_video_path = f'./Application/{video_name}.mp4'
-  output_audio_path = f'./Application/{video_name}.wav'
-  preprocessed_audio_path = f'./Application/{video_name}.wav'
+  input_video_path = video_name
+  video_name = os.path.splitext(video_name)[0]
+  output_audio_path = f'{video_name}_out.wav'
+  preprocessed_audio_path = f'{video_name}.wav'
   target_time = 10  # sec
 
   # Load the input video and extract audio

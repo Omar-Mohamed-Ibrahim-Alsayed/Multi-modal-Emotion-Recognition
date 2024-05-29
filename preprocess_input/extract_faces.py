@@ -17,7 +17,7 @@ def extract_faces(video_name):
   mtcnn = MTCNN(image_size=(720, 1280), device=device)
 
   # Path to the single video you want to process
-  video_path = f'./Application/{video_name}.mp4'
+  video_path = video_name
 
   # Define processing parameters
   save_frames = 15
@@ -49,7 +49,7 @@ def extract_faces(video_name):
   save_fps = save_frames // (desired_frames // input_fps)
 
   if save_avi:
-      out = cv2.VideoWriter(f'./Application/{video_name}.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), save_fps, (224, 224))
+      out = cv2.VideoWriter(f'{video_name}.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), save_fps, (224, 224))
 
   numpy_video = []
   frame_ctr = 0
@@ -99,7 +99,8 @@ def extract_faces(video_name):
       out.release()
 
   # Save processed frames as numpy array
-  np.save(f'./Application/{video_name}.npy', np.array(numpy_video))
+  video_name = os.path.splitext(video_name)[0]
+  np.save(f'{video_name}.npy', np.array(numpy_video))
 
   # Check for any errors during video processing
   if len(numpy_video) != save_frames:
@@ -108,8 +109,6 @@ def extract_faces(video_name):
   # Handle failed videos or any other necessary cleanup
   if failed_videos:
       print('Failed videos:', failed_videos)
-
-
 
 def extract_faces2(video_name):
   #print(cv2.__version__)

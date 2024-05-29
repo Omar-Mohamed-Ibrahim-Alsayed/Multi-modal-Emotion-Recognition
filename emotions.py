@@ -83,7 +83,7 @@ def input(data_type,video_path,audio_path,spatial_transform=None, audio_transfor
 
 def getinput(video_path, audio_path, modality='both'):
     
-    input_video_path = video_path # Replace with your video path
+    input_video_path = video_path
     input_audio_path = audio_path
 
     video_transform = transforms.Compose([
@@ -175,20 +175,27 @@ def predict(video_name):
     model.load_state_dict(torch.load('./weights/model5 - Copy.pth'))
 
     # Load a single input video (you can replace this with your specific input path)
-    video_audio_paths = [
-            (f'./Application/{video_name}.npy',f'./Application/{video_name}.wav')
+    video_audio_paths = []
+
+    directory = f'./Application/session/{video_name}/'
+    for filename in os.listdir(directory):
+        if filename.startswith('f'):
+            if filename.endswith('.mp4'):
+                filename = os.path.splitext(filename)[0]
+                npy_path = os.path.join(directory, f'{filename}.npy')
+                wav_path = os.path.join(directory, f'{filename}.wav')
+                video_audio_paths.append((npy_path, wav_path))
+                f = os.path.join(directory, f'{filename}.mp4')
+                extract_faces.extract_faces(f)
+                extract_audios.extract_audios(f)
+
+    print(f'all paths : {video_audio_paths}')
         
-    ]
     
-    extract_faces.extract_faces(video_name)
-    
-    extract_audios.extract_audios(video_name)
 
     # Loop over each pair of video and audio paths
     for video_path, audio_path in video_audio_paths:
-        # Load the model and perform other initializations here if necessary
         
-
         # Load a single input video and audio
         audio, clip = getinput(video_path, audio_path, modality='both')
 
@@ -197,7 +204,7 @@ def predict(video_name):
 
         # Perform inference
         with torch.no_grad():
-            output = model(f'./Application/{video_name}.wav', clip)
+            output = model(audio_path, clip)
 
         print(output.data)
 
@@ -208,4 +215,4 @@ def predict(video_name):
         
     print("Full time taken {:.4f} seconds".format(elapsed_time))
 
-predict('f0')
+predict('2024-05-29_22-25-59')
