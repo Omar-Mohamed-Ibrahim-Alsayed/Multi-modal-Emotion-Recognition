@@ -22,7 +22,7 @@ def extract_faces(video_name):
   # Define processing parameters
   save_frames = 15
   input_fps = 30
-  save_length = 10  # seconds
+  save_length = 5  # seconds
   save_avi = True
   failed_videos = []
 

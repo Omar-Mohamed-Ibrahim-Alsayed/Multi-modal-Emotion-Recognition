@@ -1,5 +1,17 @@
+
+
 # Import necessary libraries and modules
 import os
+import sys
+# Get the current script's directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Get the parent directory
+parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+
+# Add the parent directory to the system path
+sys.path.insert(0, parent_dir)
+
 import json
 import torch
 from torch import nn
@@ -10,7 +22,7 @@ import librosa
 from torch.autograd import Variable
 from opts import parse_opts
 from model import generate_model
-from models.fusion5 import MultiModalCNN
+from models.tmp import MultiModalCNN
 import transforms
 from preprocess_input import extract_audios, extract_faces
 import time
@@ -174,12 +186,12 @@ def predict(video_name):
 
     model = MultiModalCNN()
     model.to('cuda')
-    model.load_state_dict(torch.load('./weights/model5 - Copy.pth'))
+    model.load_state_dict(torch.load('../weights/model5 - Copy.pth'))
 
     # Load a single input video (you can replace this with your specific input path)
     video_audio_paths = []
 
-    directory = f'./Application/session/{video_name}/'
+    directory = f'../Application/session/{video_name}/'
     for filename in os.listdir(directory):
         if filename.startswith('f'):
             if filename.endswith('.mp4'):
@@ -193,7 +205,7 @@ def predict(video_name):
 
     print(f'all paths : {video_audio_paths}')
         
-    emotions = []
+    emotions = {}
 
     # Loop over each pair of video and audio paths
     for video_path, audio_path in video_audio_paths:
@@ -210,7 +222,17 @@ def predict(video_name):
 
         print(output.data)
 
-        emotions.append(print_emotion(output.data))
+        # Find the index of 'f'
+        index = video_path.find('f')
+
+        # Slice the string from the character after 'f'
+        if index != -1:
+            result = video_path[index + 1:]
+        else:
+            result = ''
+
+        emotions[os.path.splitext(result)[0]] = print_emotion(output.data)
+        emotions = dict(sorted(emotions.items()))
 
     end_time = time.time()  # End the timer
     elapsed_time = end_time - start_time  # Calculate elapsed time
@@ -219,4 +241,4 @@ def predict(video_name):
 
     return emotions
 
-predict('2024-05-29_22-25-59')
+# predict('2024-05-30_13-40-43')

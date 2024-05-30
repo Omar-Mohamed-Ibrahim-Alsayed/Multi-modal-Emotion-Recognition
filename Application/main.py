@@ -12,6 +12,7 @@ from llm import PsychologicalReportGenerator
 import markdown2
 from xhtml2pdf import pisa
 import io
+from emotions import predict
 
 
 pages = {
@@ -85,6 +86,8 @@ class MainApp(QMainWindow):
         self.session_dir = self.create_session_directory()
         self.log_file_path = os.path.join(self.session_dir, "session_log.txt")
 
+        self.emots = {}
+
         self.show()
 
     def create_session_directory(self):
@@ -157,12 +160,14 @@ class MainApp(QMainWindow):
 
     def go_to_analysis(self):
         self.processing_signal.emit(True, "Generating report...")  # Emit signal with custom message
+        self.emots = predict('2024-05-30_13-40-43')
         threading.Thread(target=self.load_analysis_report).start()
         self.log_event("Started generating analysis report.")
 
     def load_analysis_report(self):
         report_generator = PsychologicalReportGenerator()
-        markdown_text = report_generator.generate_report("""
+        # JSON string
+        json_string = """
         {
             "Question1": {
                 "Question": "Describe a situation where you felt completely overwhelmed, and how did you cope with it?",
@@ -205,7 +210,23 @@ class MainApp(QMainWindow):
                 "Emotion": "Calm"
             }
         }
-        """)
+        """
+
+        # Parse the JSON string
+        data = json.loads(json_string)
+
+        # Update the emotions using the sorted dictionary
+        for i, key in enumerate(self.emots):
+            question_key = f"Question{i+1}"
+            if question_key in data:
+                data[question_key]["Emotion"] = self.emots[key]
+
+        # Convert the updated JSON back to a string
+        updated_json_string = json.dumps(data, indent=4)
+
+        # Generate the markdown text (assuming report_generator is defined)
+        markdown_text = report_generator.generate_report(updated_json_string)
+
 
         # Convert Markdown to HTML
         html_content = markdown2.markdown(markdown_text)

@@ -10,7 +10,7 @@ def extract_audios(video_name):
   video_name = os.path.splitext(video_name)[0]
   output_audio_path = f'{video_name}_out.wav'
   preprocessed_audio_path = f'{video_name}.wav'
-  target_time = 10  # sec
+  target_time = 5  # sec
 
   # Load the input video and extract audio
   video_clip = mp.VideoFileClip(input_video_path)
