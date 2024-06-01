@@ -7,7 +7,7 @@ from speaker import Speaker
 
 
 class SpeechToTextProcessor:
-        def __init__(self):
+    def __init__(self):
         arabic = False
         if not arabic:
             self.model_path = r'models\STT\vosk-model-small-en-us-0.15'  # Path to the Vosk model
