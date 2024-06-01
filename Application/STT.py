@@ -2,9 +2,9 @@ import threading
 import wave
 import os
 import json
+import pyaudio
 from vosk import Model, KaldiRecognizer
 from speaker import Speaker
-
 
 class SpeechToTextProcessor:
     def __init__(self):
@@ -53,6 +53,7 @@ class SpeechToTextProcessor:
         wf.close()
 
         self.transcribe_audio_file(output_file)
+
     def transcribe_audio_file(self, audio_file_path):
         thread = threading.Thread(target=self.transcribe_async_worker, args=(audio_file_path,))
         thread.start()
@@ -91,7 +92,4 @@ class SpeechToTextProcessor:
             print(f"Error transcribing audio {audio_file_path}: {error}")
         else:
             print(f"Transcribed text from {audio_file_path}: {text}")
-
-# processor = SpeechToTextProcessor()
-# text = processor.transcribe_audio_file("audio/03-01-03-02-02-01-11.wav")
 

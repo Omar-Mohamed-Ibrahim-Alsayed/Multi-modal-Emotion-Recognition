@@ -52,3 +52,6 @@ class QuestionGenerator:
 
     def get_index(self):
         return self.indx
+
+    def get_questions(self):
+        return Questions
