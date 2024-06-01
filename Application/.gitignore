@@ -1,1 +1,708 @@
-Application/ffmpeg/
+datasets
+venv
+__pycache__
+weights
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+../models/STT
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+./Application/ffmpeg
+./Application/0.wav
+./Application/0.mp4
+./Application/f0.pp4
+# Jupyter Notebook
+.ipynb_checkpoints
+
+
+tts
+tts.py
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
+.pdm.toml
+.pdm-python
+.pdm-build/
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# AWS User-specific
+.idea/**/aws.xml
+
+# Generated files
+.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# Gradle and Maven with auto-import
+# When using Gradle or Maven with auto-import, you should exclude module files,
+# since they will be recreated, and may cause churn.  Uncomment if using
+# auto-import.
+# .idea/artifacts
+# .idea/compiler.xml
+# .idea/jarRepositories.xml
+# .idea/modules.xml
+# .idea/*.iml
+# .idea/modules
+# *.iml
+# *.ipr
+
+# CMake
+cmake-build-*/
+
+# Mongo Explorer plugin
+.idea/**/mongoSettings.xml
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# SonarLint plugin
+.idea/sonarlint/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Editor-based Rest Client
+.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+/Application/ffmpeg
+/Application/session
+*.json
+Examples/f0.avi
+Examples/f0.npy
+tts/piper_amd64.tar.gz
+tts/piper/demo.txt
+tts/piper/libespeak-ng.so.1
+tts/piper/libespeak-ng.so.1.1.51
+tts/piper/libonnxruntime.so.1.14.1
+tts/piper/libpiper_phonemize.so.1
+tts/piper/libpiper_phonemize.so.1.1.0
+tts/piper/libtashkeel_model.ort
+tts/piper/piper
+tts/piper/welcome.wav
+tts/piper/welcome2.wav
+tts/piper/espeak-ng-data/af_dict
+tts/piper/espeak-ng-data/am_dict
+tts/piper/espeak-ng-data/an_dict
+tts/piper/espeak-ng-data/ar_dict
+tts/piper/espeak-ng-data/as_dict
+tts/piper/espeak-ng-data/az_dict
+tts/piper/espeak-ng-data/ba_dict
+tts/piper/espeak-ng-data/be_dict
+tts/piper/espeak-ng-data/bg_dict
+tts/piper/espeak-ng-data/bn_dict
+tts/piper/espeak-ng-data/bpy_dict
+tts/piper/espeak-ng-data/bs_dict
+tts/piper/espeak-ng-data/ca_dict
+tts/piper/espeak-ng-data/chr_dict
+tts/piper/espeak-ng-data/cmn_dict
+tts/piper/espeak-ng-data/cs_dict
+tts/piper/espeak-ng-data/cv_dict
+tts/piper/espeak-ng-data/cy_dict
+tts/piper/espeak-ng-data/da_dict
+tts/piper/espeak-ng-data/de_dict
+tts/piper/espeak-ng-data/el_dict
+tts/piper/espeak-ng-data/en_dict
+tts/piper/espeak-ng-data/eo_dict
+tts/piper/espeak-ng-data/es_dict
+tts/piper/espeak-ng-data/et_dict
+tts/piper/espeak-ng-data/eu_dict
+tts/piper/espeak-ng-data/fa_dict
+tts/piper/espeak-ng-data/fi_dict
+tts/piper/espeak-ng-data/fr_dict
+tts/piper/espeak-ng-data/ga_dict
+tts/piper/espeak-ng-data/gd_dict
+tts/piper/espeak-ng-data/gn_dict
+tts/piper/espeak-ng-data/grc_dict
+tts/piper/espeak-ng-data/gu_dict
+tts/piper/espeak-ng-data/hak_dict
+tts/piper/espeak-ng-data/haw_dict
+tts/piper/espeak-ng-data/he_dict
+tts/piper/espeak-ng-data/hi_dict
+tts/piper/espeak-ng-data/hr_dict
+tts/piper/espeak-ng-data/ht_dict
+tts/piper/espeak-ng-data/hu_dict
+tts/piper/espeak-ng-data/hy_dict
+tts/piper/espeak-ng-data/ia_dict
+tts/piper/espeak-ng-data/id_dict
+tts/piper/espeak-ng-data/intonations
+tts/piper/espeak-ng-data/io_dict
+tts/piper/espeak-ng-data/is_dict
+tts/piper/espeak-ng-data/it_dict
+tts/piper/espeak-ng-data/ja_dict
+tts/piper/espeak-ng-data/jbo_dict
+tts/piper/espeak-ng-data/ka_dict
+tts/piper/espeak-ng-data/kk_dict
+tts/piper/espeak-ng-data/kl_dict
+tts/piper/espeak-ng-data/kn_dict
+tts/piper/espeak-ng-data/ko_dict
+tts/piper/espeak-ng-data/kok_dict
+tts/piper/espeak-ng-data/ku_dict
+tts/piper/espeak-ng-data/ky_dict
+tts/piper/espeak-ng-data/la_dict
+tts/piper/espeak-ng-data/lb_dict
+tts/piper/espeak-ng-data/lfn_dict
+tts/piper/espeak-ng-data/lt_dict
+tts/piper/espeak-ng-data/lv_dict
+tts/piper/espeak-ng-data/mi_dict
+tts/piper/espeak-ng-data/mk_dict
+tts/piper/espeak-ng-data/ml_dict
+tts/piper/espeak-ng-data/mr_dict
+tts/piper/espeak-ng-data/ms_dict
+tts/piper/espeak-ng-data/mt_dict
+tts/piper/espeak-ng-data/mto_dict
+tts/piper/espeak-ng-data/my_dict
+tts/piper/espeak-ng-data/nci_dict
+tts/piper/espeak-ng-data/ne_dict
+tts/piper/espeak-ng-data/nl_dict
+tts/piper/espeak-ng-data/no_dict
+tts/piper/espeak-ng-data/nog_dict
+tts/piper/espeak-ng-data/om_dict
+tts/piper/espeak-ng-data/or_dict
+tts/piper/espeak-ng-data/pa_dict
+tts/piper/espeak-ng-data/pap_dict
+tts/piper/espeak-ng-data/phondata
+tts/piper/espeak-ng-data/phondata-manifest
+tts/piper/espeak-ng-data/phonindex
+tts/piper/espeak-ng-data/phontab
+tts/piper/espeak-ng-data/piqd_dict
+tts/piper/espeak-ng-data/pl_dict
+tts/piper/espeak-ng-data/pt_dict
+tts/piper/espeak-ng-data/py_dict
+tts/piper/espeak-ng-data/qdb_dict
+tts/piper/espeak-ng-data/qu_dict
+tts/piper/espeak-ng-data/quc_dict
+tts/piper/espeak-ng-data/qya_dict
+tts/piper/espeak-ng-data/ro_dict
+tts/piper/espeak-ng-data/ru_dict
+tts/piper/espeak-ng-data/sd_dict
+tts/piper/espeak-ng-data/shn_dict
+tts/piper/espeak-ng-data/si_dict
+tts/piper/espeak-ng-data/sjn_dict
+tts/piper/espeak-ng-data/sk_dict
+tts/piper/espeak-ng-data/sl_dict
+tts/piper/espeak-ng-data/smj_dict
+tts/piper/espeak-ng-data/sq_dict
+tts/piper/espeak-ng-data/sr_dict
+tts/piper/espeak-ng-data/sv_dict
+tts/piper/espeak-ng-data/sw_dict
+tts/piper/espeak-ng-data/ta_dict
+tts/piper/espeak-ng-data/te_dict
+tts/piper/espeak-ng-data/th_dict
+tts/piper/espeak-ng-data/tk_dict
+tts/piper/espeak-ng-data/tn_dict
+tts/piper/espeak-ng-data/tr_dict
+tts/piper/espeak-ng-data/tt_dict
+tts/piper/espeak-ng-data/ug_dict
+tts/piper/espeak-ng-data/uk_dict
+tts/piper/espeak-ng-data/ur_dict
+tts/piper/espeak-ng-data/uz_dict
+tts/piper/espeak-ng-data/vi_dict
+tts/piper/espeak-ng-data/yue_dict
+tts/piper/espeak-ng-data/lang/eu
+tts/piper/espeak-ng-data/lang/ko
+tts/piper/espeak-ng-data/lang/qu
+tts/piper/espeak-ng-data/lang/aav/vi
+tts/piper/espeak-ng-data/lang/aav/vi-VN-x-central
+tts/piper/espeak-ng-data/lang/aav/vi-VN-x-south
+tts/piper/espeak-ng-data/lang/art/eo
+tts/piper/espeak-ng-data/lang/art/ia
+tts/piper/espeak-ng-data/lang/art/io
+tts/piper/espeak-ng-data/lang/art/jbo
+tts/piper/espeak-ng-data/lang/art/lfn
+tts/piper/espeak-ng-data/lang/art/piqd
+tts/piper/espeak-ng-data/lang/art/py
+tts/piper/espeak-ng-data/lang/art/qdb
+tts/piper/espeak-ng-data/lang/art/qya
+tts/piper/espeak-ng-data/lang/art/sjn
+tts/piper/espeak-ng-data/lang/azc/nci
+tts/piper/espeak-ng-data/lang/bat/lt
+tts/piper/espeak-ng-data/lang/bat/ltg
+tts/piper/espeak-ng-data/lang/bat/lv
+tts/piper/espeak-ng-data/lang/bnt/sw
+tts/piper/espeak-ng-data/lang/bnt/tn
+tts/piper/espeak-ng-data/lang/ccs/ka
+tts/piper/espeak-ng-data/lang/cel/cy
+tts/piper/espeak-ng-data/lang/cel/ga
+tts/piper/espeak-ng-data/lang/cel/gd
+tts/piper/espeak-ng-data/lang/cus/om
+tts/piper/espeak-ng-data/lang/dra/kn
+tts/piper/espeak-ng-data/lang/dra/ml
+tts/piper/espeak-ng-data/lang/dra/ta
+tts/piper/espeak-ng-data/lang/dra/te
+tts/piper/espeak-ng-data/lang/esx/kl
+tts/piper/espeak-ng-data/lang/gmq/da
+tts/piper/espeak-ng-data/lang/gmq/is
+tts/piper/espeak-ng-data/lang/gmq/nb
+tts/piper/espeak-ng-data/lang/gmq/sv
+tts/piper/espeak-ng-data/lang/gmw/af
+tts/piper/espeak-ng-data/lang/gmw/de
+tts/piper/espeak-ng-data/lang/gmw/en
+tts/piper/espeak-ng-data/lang/gmw/en-029
+tts/piper/espeak-ng-data/lang/gmw/en-GB-scotland
+tts/piper/espeak-ng-data/lang/gmw/en-GB-x-gbclan
+tts/piper/espeak-ng-data/lang/gmw/en-GB-x-gbcwmd
+tts/piper/espeak-ng-data/lang/gmw/en-GB-x-rp
+tts/piper/espeak-ng-data/lang/gmw/en-US
+tts/piper/espeak-ng-data/lang/gmw/en-US-nyc
+tts/piper/espeak-ng-data/lang/gmw/lb
+tts/piper/espeak-ng-data/lang/gmw/nl
+tts/piper/espeak-ng-data/lang/grk/el
+tts/piper/espeak-ng-data/lang/grk/grc
+tts/piper/espeak-ng-data/lang/inc/as
+tts/piper/espeak-ng-data/lang/inc/bn
+tts/piper/espeak-ng-data/lang/inc/bpy
+tts/piper/espeak-ng-data/lang/inc/gu
+tts/piper/espeak-ng-data/lang/inc/hi
+tts/piper/espeak-ng-data/lang/inc/kok
+tts/piper/espeak-ng-data/lang/inc/mr
+tts/piper/espeak-ng-data/lang/inc/ne
+tts/piper/espeak-ng-data/lang/inc/or
+tts/piper/espeak-ng-data/lang/inc/pa
+tts/piper/espeak-ng-data/lang/inc/sd
+tts/piper/espeak-ng-data/lang/inc/si
+tts/piper/espeak-ng-data/lang/inc/ur
+tts/piper/espeak-ng-data/lang/ine/hy
+tts/piper/espeak-ng-data/lang/ine/hyw
+tts/piper/espeak-ng-data/lang/ine/sq
+tts/piper/espeak-ng-data/lang/ira/fa
+tts/piper/espeak-ng-data/lang/ira/fa-Latn
+tts/piper/espeak-ng-data/lang/ira/ku
+tts/piper/espeak-ng-data/lang/iro/chr
+tts/piper/espeak-ng-data/lang/itc/la
+tts/piper/espeak-ng-data/lang/jpx/ja
+tts/piper/espeak-ng-data/lang/map/haw
+tts/piper/espeak-ng-data/lang/miz/mto
+tts/piper/espeak-ng-data/lang/myn/quc
+tts/piper/espeak-ng-data/lang/poz/id
+tts/piper/espeak-ng-data/lang/poz/mi
+tts/piper/espeak-ng-data/lang/poz/ms
+tts/piper/espeak-ng-data/lang/roa/an
+tts/piper/espeak-ng-data/lang/roa/ca
+tts/piper/espeak-ng-data/lang/roa/es
+tts/piper/espeak-ng-data/lang/roa/es-419
+tts/piper/espeak-ng-data/lang/roa/fr
+tts/piper/espeak-ng-data/lang/roa/fr-BE
+tts/piper/espeak-ng-data/lang/roa/fr-CH
+tts/piper/espeak-ng-data/lang/roa/ht
+tts/piper/espeak-ng-data/lang/roa/it
+tts/piper/espeak-ng-data/lang/roa/pap
+tts/piper/espeak-ng-data/lang/roa/pt
+tts/piper/espeak-ng-data/lang/roa/pt-BR
+tts/piper/espeak-ng-data/lang/roa/ro
+tts/piper/espeak-ng-data/lang/sai/gn
+tts/piper/espeak-ng-data/lang/sem/am
+tts/piper/espeak-ng-data/lang/sem/ar
+tts/piper/espeak-ng-data/lang/sem/he
+tts/piper/espeak-ng-data/lang/sem/mt
+tts/piper/espeak-ng-data/lang/sit/cmn
+tts/piper/espeak-ng-data/lang/sit/cmn-Latn-pinyin
+tts/piper/espeak-ng-data/lang/sit/hak
+tts/piper/espeak-ng-data/lang/sit/my
+tts/piper/espeak-ng-data/lang/sit/yue
+tts/piper/espeak-ng-data/lang/sit/yue-Latn-jyutping
+tts/piper/espeak-ng-data/lang/tai/shn
+tts/piper/espeak-ng-data/lang/tai/th
+tts/piper/espeak-ng-data/lang/trk/az
+tts/piper/espeak-ng-data/lang/trk/ba
+tts/piper/espeak-ng-data/lang/trk/cv
+tts/piper/espeak-ng-data/lang/trk/kk
+tts/piper/espeak-ng-data/lang/trk/ky
+tts/piper/espeak-ng-data/lang/trk/nog
+tts/piper/espeak-ng-data/lang/trk/tk
+tts/piper/espeak-ng-data/lang/trk/tr
+tts/piper/espeak-ng-data/lang/trk/tt
+tts/piper/espeak-ng-data/lang/trk/ug
+tts/piper/espeak-ng-data/lang/trk/uz
+tts/piper/espeak-ng-data/lang/urj/et
+tts/piper/espeak-ng-data/lang/urj/fi
+tts/piper/espeak-ng-data/lang/urj/hu
+tts/piper/espeak-ng-data/lang/urj/smj
+tts/piper/espeak-ng-data/lang/zle/be
+tts/piper/espeak-ng-data/lang/zle/ru
+tts/piper/espeak-ng-data/lang/zle/ru-cl
+tts/piper/espeak-ng-data/lang/zle/ru-LV
+tts/piper/espeak-ng-data/lang/zle/uk
+tts/piper/espeak-ng-data/lang/zls/bg
+tts/piper/espeak-ng-data/lang/zls/bs
+tts/piper/espeak-ng-data/lang/zls/hr
+tts/piper/espeak-ng-data/lang/zls/mk
+tts/piper/espeak-ng-data/lang/zls/sl
+tts/piper/espeak-ng-data/lang/zls/sr
+tts/piper/espeak-ng-data/lang/zlw/cs
+tts/piper/espeak-ng-data/lang/zlw/pl
+tts/piper/espeak-ng-data/lang/zlw/sk
+tts/piper/espeak-ng-data/voices/!v/adam
+tts/piper/espeak-ng-data/voices/!v/Alex
+tts/piper/espeak-ng-data/voices/!v/Alicia
+tts/piper/espeak-ng-data/voices/!v/Andrea
+tts/piper/espeak-ng-data/voices/!v/Andy
+tts/piper/espeak-ng-data/voices/!v/anika
+tts/piper/espeak-ng-data/voices/!v/anikaRobot
+tts/piper/espeak-ng-data/voices/!v/Annie
+tts/piper/espeak-ng-data/voices/!v/announcer
+tts/piper/espeak-ng-data/voices/!v/antonio
+tts/piper/espeak-ng-data/voices/!v/AnxiousAndy
+tts/piper/espeak-ng-data/voices/!v/aunty
+tts/piper/espeak-ng-data/voices/!v/belinda
+tts/piper/espeak-ng-data/voices/!v/benjamin
+tts/piper/espeak-ng-data/voices/!v/boris
+tts/piper/espeak-ng-data/voices/!v/caleb
+tts/piper/espeak-ng-data/voices/!v/croak
+tts/piper/espeak-ng-data/voices/!v/david
+tts/piper/espeak-ng-data/voices/!v/Demonic
+tts/piper/espeak-ng-data/voices/!v/Denis
+tts/piper/espeak-ng-data/voices/!v/Diogo
+tts/piper/espeak-ng-data/voices/!v/ed
+tts/piper/espeak-ng-data/voices/!v/edward
+tts/piper/espeak-ng-data/voices/!v/edward2
+tts/piper/espeak-ng-data/voices/!v/f1
+tts/piper/espeak-ng-data/voices/!v/f2
+tts/piper/espeak-ng-data/voices/!v/f3
+tts/piper/espeak-ng-data/voices/!v/f4
+tts/piper/espeak-ng-data/voices/!v/f5
+tts/piper/espeak-ng-data/voices/!v/fast
+tts/piper/espeak-ng-data/voices/!v/Gene
+tts/piper/espeak-ng-data/voices/!v/Gene2
+tts/piper/espeak-ng-data/voices/!v/grandma
+tts/piper/espeak-ng-data/voices/!v/grandpa
+tts/piper/espeak-ng-data/voices/!v/gustave
+tts/piper/espeak-ng-data/voices/!v/Henrique
+tts/piper/espeak-ng-data/voices/!v/Hugo
+tts/piper/espeak-ng-data/voices/!v/ian
+tts/piper/espeak-ng-data/voices/!v/iven
+tts/piper/espeak-ng-data/voices/!v/iven2
+tts/piper/espeak-ng-data/voices/!v/iven3
+tts/piper/espeak-ng-data/voices/!v/iven4
+tts/piper/espeak-ng-data/voices/!v/Jacky
+tts/piper/espeak-ng-data/voices/!v/john
+tts/piper/espeak-ng-data/voices/!v/kaukovalta
+tts/piper/espeak-ng-data/voices/!v/klatt
+tts/piper/espeak-ng-data/voices/!v/klatt2
+tts/piper/espeak-ng-data/voices/!v/klatt3
+tts/piper/espeak-ng-data/voices/!v/klatt4
+tts/piper/espeak-ng-data/voices/!v/klatt5
+tts/piper/espeak-ng-data/voices/!v/klatt6
+tts/piper/espeak-ng-data/voices/!v/Lee
+tts/piper/espeak-ng-data/voices/!v/linda
+tts/piper/espeak-ng-data/voices/!v/m1
+tts/piper/espeak-ng-data/voices/!v/m2
+tts/piper/espeak-ng-data/voices/!v/m3
+tts/piper/espeak-ng-data/voices/!v/m4
+tts/piper/espeak-ng-data/voices/!v/m5
+tts/piper/espeak-ng-data/voices/!v/m6
+tts/piper/espeak-ng-data/voices/!v/m7
+tts/piper/espeak-ng-data/voices/!v/m8
+tts/piper/espeak-ng-data/voices/!v/marcelo
+tts/piper/espeak-ng-data/voices/!v/Marco
+tts/piper/espeak-ng-data/voices/!v/Mario
+tts/piper/espeak-ng-data/voices/!v/max
+tts/piper/espeak-ng-data/voices/!v/Michael
+tts/piper/espeak-ng-data/voices/!v/michel
+tts/piper/espeak-ng-data/voices/!v/miguel
+tts/piper/espeak-ng-data/voices/!v/Mike
+tts/piper/espeak-ng-data/voices/!v/mike2
+tts/piper/espeak-ng-data/voices/!v/Mr serious
+tts/piper/espeak-ng-data/voices/!v/Nguyen
+tts/piper/espeak-ng-data/voices/!v/norbert
+tts/piper/espeak-ng-data/voices/!v/pablo
+tts/piper/espeak-ng-data/voices/!v/paul
+tts/piper/espeak-ng-data/voices/!v/pedro
+tts/piper/espeak-ng-data/voices/!v/quincy
+tts/piper/espeak-ng-data/voices/!v/Reed
+tts/piper/espeak-ng-data/voices/!v/RicishayMax
+tts/piper/espeak-ng-data/voices/!v/RicishayMax2
+tts/piper/espeak-ng-data/voices/!v/RicishayMax3
+tts/piper/espeak-ng-data/voices/!v/rob
+tts/piper/espeak-ng-data/voices/!v/robert
+tts/piper/espeak-ng-data/voices/!v/robosoft
+tts/piper/espeak-ng-data/voices/!v/robosoft2
+tts/piper/espeak-ng-data/voices/!v/robosoft3
+tts/piper/espeak-ng-data/voices/!v/robosoft4
+tts/piper/espeak-ng-data/voices/!v/robosoft5
+tts/piper/espeak-ng-data/voices/!v/robosoft6
+tts/piper/espeak-ng-data/voices/!v/robosoft7
+tts/piper/espeak-ng-data/voices/!v/robosoft8
+tts/piper/espeak-ng-data/voices/!v/sandro
+tts/piper/espeak-ng-data/voices/!v/shelby
+tts/piper/espeak-ng-data/voices/!v/steph
+tts/piper/espeak-ng-data/voices/!v/steph2
+tts/piper/espeak-ng-data/voices/!v/steph3
+tts/piper/espeak-ng-data/voices/!v/Storm
+tts/piper/espeak-ng-data/voices/!v/travis
+tts/piper/espeak-ng-data/voices/!v/Tweaky
+tts/piper/espeak-ng-data/voices/!v/UniRobot
+tts/piper/espeak-ng-data/voices/!v/victor
+tts/piper/espeak-ng-data/voices/!v/whisper
+tts/piper/espeak-ng-data/voices/!v/whisperf
+tts/piper/espeak-ng-data/voices/!v/zac
+tts/piper/espeak-ng-data/voices/mb/mb-af1
+tts/piper/espeak-ng-data/voices/mb/mb-af1-en
+tts/piper/espeak-ng-data/voices/mb/mb-ar1
+tts/piper/espeak-ng-data/voices/mb/mb-ar2
+tts/piper/espeak-ng-data/voices/mb/mb-br1
+tts/piper/espeak-ng-data/voices/mb/mb-br2
+tts/piper/espeak-ng-data/voices/mb/mb-br3
+tts/piper/espeak-ng-data/voices/mb/mb-br4
+tts/piper/espeak-ng-data/voices/mb/mb-ca1
+tts/piper/espeak-ng-data/voices/mb/mb-ca2
+tts/piper/espeak-ng-data/voices/mb/mb-cn1
+tts/piper/espeak-ng-data/voices/mb/mb-cr1
+tts/piper/espeak-ng-data/voices/mb/mb-cz1
+tts/piper/espeak-ng-data/voices/mb/mb-cz2
+tts/piper/espeak-ng-data/voices/mb/mb-de1
+tts/piper/espeak-ng-data/voices/mb/mb-de1-en
+tts/piper/espeak-ng-data/voices/mb/mb-de2
+tts/piper/espeak-ng-data/voices/mb/mb-de2-en
+tts/piper/espeak-ng-data/voices/mb/mb-de3
+tts/piper/espeak-ng-data/voices/mb/mb-de3-en
+tts/piper/espeak-ng-data/voices/mb/mb-de4
+tts/piper/espeak-ng-data/voices/mb/mb-de4-en
+tts/piper/espeak-ng-data/voices/mb/mb-de5
+tts/piper/espeak-ng-data/voices/mb/mb-de5-en
+tts/piper/espeak-ng-data/voices/mb/mb-de6
+tts/piper/espeak-ng-data/voices/mb/mb-de6-en
+tts/piper/espeak-ng-data/voices/mb/mb-de6-grc
+tts/piper/espeak-ng-data/voices/mb/mb-de7
+tts/piper/espeak-ng-data/voices/mb/mb-de8
+tts/piper/espeak-ng-data/voices/mb/mb-ee1
+tts/piper/espeak-ng-data/voices/mb/mb-en1
+tts/piper/espeak-ng-data/voices/mb/mb-es1
+tts/piper/espeak-ng-data/voices/mb/mb-es2
+tts/piper/espeak-ng-data/voices/mb/mb-es3
+tts/piper/espeak-ng-data/voices/mb/mb-es4
+tts/piper/espeak-ng-data/voices/mb/mb-fr1
+tts/piper/espeak-ng-data/voices/mb/mb-fr1-en
+tts/piper/espeak-ng-data/voices/mb/mb-fr2
+tts/piper/espeak-ng-data/voices/mb/mb-fr3
+tts/piper/espeak-ng-data/voices/mb/mb-fr4
+tts/piper/espeak-ng-data/voices/mb/mb-fr4-en
+tts/piper/espeak-ng-data/voices/mb/mb-fr5
+tts/piper/espeak-ng-data/voices/mb/mb-fr6
+tts/piper/espeak-ng-data/voices/mb/mb-fr7
+tts/piper/espeak-ng-data/voices/mb/mb-gr1
+tts/piper/espeak-ng-data/voices/mb/mb-gr2
+tts/piper/espeak-ng-data/voices/mb/mb-gr2-en
+tts/piper/espeak-ng-data/voices/mb/mb-hb1
+tts/piper/espeak-ng-data/voices/mb/mb-hb2
+tts/piper/espeak-ng-data/voices/mb/mb-hu1
+tts/piper/espeak-ng-data/voices/mb/mb-hu1-en
+tts/piper/espeak-ng-data/voices/mb/mb-ic1
+tts/piper/espeak-ng-data/voices/mb/mb-id1
+tts/piper/espeak-ng-data/voices/mb/mb-in1
+tts/piper/espeak-ng-data/voices/mb/mb-in2
+tts/piper/espeak-ng-data/voices/mb/mb-ir1
+tts/piper/espeak-ng-data/voices/mb/mb-it1
+tts/piper/espeak-ng-data/voices/mb/mb-it2
+tts/piper/espeak-ng-data/voices/mb/mb-it3
+tts/piper/espeak-ng-data/voices/mb/mb-it4
+tts/piper/espeak-ng-data/voices/mb/mb-jp1
+tts/piper/espeak-ng-data/voices/mb/mb-jp2
+tts/piper/espeak-ng-data/voices/mb/mb-jp3
+tts/piper/espeak-ng-data/voices/mb/mb-la1
+tts/piper/espeak-ng-data/voices/mb/mb-lt1
+tts/piper/espeak-ng-data/voices/mb/mb-lt2
+tts/piper/espeak-ng-data/voices/mb/mb-ma1
+tts/piper/espeak-ng-data/voices/mb/mb-mx1
+tts/piper/espeak-ng-data/voices/mb/mb-mx2
+tts/piper/espeak-ng-data/voices/mb/mb-nl1
+tts/piper/espeak-ng-data/voices/mb/mb-nl2
+tts/piper/espeak-ng-data/voices/mb/mb-nl2-en
+tts/piper/espeak-ng-data/voices/mb/mb-nl3
+tts/piper/espeak-ng-data/voices/mb/mb-nz1
+tts/piper/espeak-ng-data/voices/mb/mb-pl1
+tts/piper/espeak-ng-data/voices/mb/mb-pl1-en
+tts/piper/espeak-ng-data/voices/mb/mb-pt1
+tts/piper/espeak-ng-data/voices/mb/mb-ro1
+tts/piper/espeak-ng-data/voices/mb/mb-ro1-en
+tts/piper/espeak-ng-data/voices/mb/mb-sw1
+tts/piper/espeak-ng-data/voices/mb/mb-sw1-en
+tts/piper/espeak-ng-data/voices/mb/mb-sw2
+tts/piper/espeak-ng-data/voices/mb/mb-sw2-en
+tts/piper/espeak-ng-data/voices/mb/mb-tl1
+tts/piper/espeak-ng-data/voices/mb/mb-tr1
+tts/piper/espeak-ng-data/voices/mb/mb-tr2
+tts/piper/espeak-ng-data/voices/mb/mb-us1
+tts/piper/espeak-ng-data/voices/mb/mb-us2
+tts/piper/espeak-ng-data/voices/mb/mb-us3
+tts/piper/espeak-ng-data/voices/mb/mb-vz1
+tts/piper/languages/arabic/ar_JO-kareem-medium.onnx
+tts/piper/languages/english/en_US-amy-medium.onnx
