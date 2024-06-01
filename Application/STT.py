@@ -7,13 +7,52 @@ from speaker import Speaker
 
 
 class SpeechToTextProcessor:
-    def __init__(self):
-        self.model_path = r'..\models\STT\vosk-model-small-en-us-0.15'  # Path to the Vosk model
+        def __init__(self):
+        arabic = False
+        if not arabic:
+            self.model_path = r'models\STT\vosk-model-small-en-us-0.15'  # Path to the Vosk model
+        else:
+            self.model_path = r'models\STT\vosk-model-ar-mgb2-0.4'
         if not os.path.exists(self.model_path):
             raise FileNotFoundError(f"Model path {self.model_path} does not exist.")
         self.model = Model(self.model_path)
         self.speaker = Speaker(1)
 
+    def record_audio(self, record_seconds, output_file):
+        p = pyaudio.PyAudio()
+        chunk = 1024  # Record in chunks of 1024 samples
+        sample_format = pyaudio.paInt16  # 16 bits per sample
+        channels = 1
+        rate = 16000  # Record at 16000 samples per second
+
+        print("Recording...")
+
+        stream = p.open(format=sample_format,
+                        channels=channels,
+                        rate=rate,
+                        input=True,
+                        frames_per_buffer=chunk)
+
+        frames = []
+
+        for _ in range(0, int(rate / chunk * record_seconds)):
+            data = stream.read(chunk)
+            frames.append(data)
+
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+
+        print("Recording finished.")
+
+        wf = wave.open(output_file, 'wb')
+        wf.setnchannels(channels)
+        wf.setsampwidth(p.get_sample_size(sample_format))
+        wf.setframerate(rate)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+
+        self.transcribe_audio_file(output_file)
     def transcribe_audio_file(self, audio_file_path):
         thread = threading.Thread(target=self.transcribe_async_worker, args=(audio_file_path,))
         thread.start()
