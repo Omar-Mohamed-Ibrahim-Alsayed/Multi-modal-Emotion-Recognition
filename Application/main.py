@@ -2,7 +2,7 @@ import sys
 import os
 import threading
 from datetime import datetime
-from PyQt5.QtCore import Qt, pyqtSignal as Signal
+from PyQt5.QtCore import QThread,Qt, pyqtSignal as Signal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
@@ -12,7 +12,9 @@ from llm import PsychologicalReportGenerator
 import markdown2
 from xhtml2pdf import pisa
 import io
+import time
 from emotions import predict
+from STT import SpeechToTextProcessor
 
 
 pages = {
@@ -21,6 +23,55 @@ pages = {
     "questions": 2,
     "loading": 3
 }
+
+class EmotionsThread(QThread):
+    finished = Signal(dict)
+    def get_emotions(self):
+        return predict('2024-05-30_13-40-43')
+
+    def run(self):
+
+        emotions = self.get_emotions()
+        self.finished.emit(emotions)
+
+class AnswersThread(QThread):
+    finished = Signal(dict)
+
+    def get_answers(self):
+        stt = SpeechToTextProcessor()
+        return stt.transcribe_all('2024-05-30_13-40-43')
+        
+    def run(self):
+
+        answers = self.get_answers()
+        self.finished.emit(answers)
+
+class QuestionsThread(QThread):
+    finished = Signal(dict)
+   
+    def get_questions(self):
+        
+        # Open and read the JSON file
+        with open('questions.json', 'r') as file:
+            json_data = file.read()
+
+        # Parse the JSON data into a Python dictionary
+        original_response = json.loads(json_data)
+
+        Questions = []
+        for key, value in original_response.items():
+            Questions.append(value["Question"])
+
+        nquestions = {}
+        for i, (key, value) in enumerate(original_response.items(), start=1):
+            nquestions[str(i-1)] = value["Question"]
+        return nquestions
+
+
+    def run(self):
+
+        questions = self.get_questions()
+        self.finished.emit(questions)
 
 class MainApp(QMainWindow):
 
@@ -87,7 +138,8 @@ class MainApp(QMainWindow):
         self.log_file_path = os.path.join(self.session_dir, "session_log.txt")
 
         self.emots = {}
-
+        self.answers = {}
+        self.questions = {}
         self.show()
 
     def create_session_directory(self):
@@ -100,6 +152,31 @@ class MainApp(QMainWindow):
         os.mkdir(session_subdir)
 
         return session_subdir
+
+    def get_emotions(self):
+        self.emots_thread = EmotionsThread()
+        self.emots_thread.finished.connect(self.handle_emotions_result)
+        self.emots_thread.start()
+
+    def handle_emotions_result(self, emotions):
+        self.emots = emotions
+
+    def get_answers(self):
+        self.answers_thread = AnswersThread()
+        self.answers_thread.finished.connect(self.handle_answers_result)
+        self.answers_thread.start()
+
+    def handle_answers_result(self, answers):
+        self.answers = answers
+
+    def get_questions(self):
+        self.questions_thread = QuestionsThread()
+        self.questions_thread.finished.connect(self.handle_questions_result)
+        self.questions_thread.start()
+
+    def handle_questions_result(self, questions):
+        self.questions = questions
+
 
     def log_event(self, message):
         with open(self.log_file_path, "a") as log_file:
@@ -158,9 +235,64 @@ class MainApp(QMainWindow):
         self.stackedPages.setCurrentIndex(pages["homepage"])
         self.log_event("Navigated to home page.")
 
+   
+    def get_emotions(self):
+        # Create instances of the threads
+        self.emots_thread = EmotionsThread()
+        self.emots_thread.finished.connect(self.handle_emotions_result)
+        self.emots_thread.start()
+
+    def get_answers(self):
+        self.answers_thread = AnswersThread()
+        self.answers_thread.finished.connect(self.handle_answers_result)
+        self.answers_thread.start()
+
+    def get_questions(self):
+        self.questions_thread = QuestionsThread()
+
+        # Connect the finished signals of each thread to their respective handler methods
+        
+        self.questions_thread.finished.connect(self.handle_questions_result)
+
+        # Start the threads
+        
+        
+        self.questions_thread.start()
+
+
+
+
     def go_to_analysis(self):
-        self.processing_signal.emit(True, "Generating report...")  # Emit signal with custom message
-        self.emots = predict('2024-05-30_13-40-43')
+        # Emit the processing signal
+        self.processing_signal.emit(True, "Generating report...")
+
+        threads = []
+
+        # Create a new thread for get_results method
+        thread = threading.Thread(target=self.get_emotions)
+        threads.append(thread)
+
+        thread = threading.Thread(target=self.get_answers)
+        threads.append(thread)
+
+        thread = threading.Thread(target=self.get_questions)
+        threads.append(thread)
+
+        # Start all threads
+        for thread in threads:
+            thread.start()
+
+        for thread in threads:
+            thread.join()
+        
+        
+       
+
+        while not all([self.emots_thread.isFinished(), self.answers_thread.isFinished(), self.questions_thread.isFinished()]):
+            QApplication.processEvents()  
+
+        # Log the event
+        self.log_event("Started processing data.")
         threading.Thread(target=self.load_analysis_report).start()
         self.log_event("Started generating analysis report.")
 
@@ -211,15 +343,16 @@ class MainApp(QMainWindow):
             }
         }
         """
-
+        
         # Parse the JSON string
         data = json.loads(json_string)
-
         # Update the emotions using the sorted dictionary
-        for i, key in enumerate(self.emots):
+        for i, key in enumerate(self.questions):
             question_key = f"Question{i+1}"
             if question_key in data:
+                data[question_key]["Question"] = self.questions[key]
                 data[question_key]["Emotion"] = self.emots[key]
+                data[question_key]["Answer"] = self.answers[key]
 
         # Convert the updated JSON back to a string
         updated_json_string = json.dumps(data, indent=4)

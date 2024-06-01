@@ -157,6 +157,14 @@ def print_emotion(output_tensor):
 
     return emotions[max_index]
 
+def process_file(filename, directory, video_audio_paths):
+    filename = os.path.splitext(filename)[0]
+    npy_path = os.path.join(directory, f'{filename}.npy')
+    wav_path = os.path.join(directory, f'{filename}.wav')
+    video_audio_paths.append((npy_path, wav_path))
+    f = os.path.join(directory, f'{filename}.mp4')
+    extract_faces.extract_faces(f)
+    extract_audios.extract_audios(f)
 
 def predict(video_name):
     start_time = time.time()
@@ -203,7 +211,6 @@ def predict(video_name):
                 extract_faces.extract_faces(f)
                 extract_audios.extract_audios(f)
 
-    print(f'all paths : {video_audio_paths}')
         
     emotions = {}
 
@@ -242,3 +249,5 @@ def predict(video_name):
     return emotions
 
 # predict('2024-05-30_13-40-43')
+emotions = predict('2024-05-30_13-40-43')
+print(emotions)
