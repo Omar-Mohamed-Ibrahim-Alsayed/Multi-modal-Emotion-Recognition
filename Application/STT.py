@@ -2,6 +2,7 @@ import threading
 import wave
 import os
 import json
+import pyaudio
 from vosk import Model, KaldiRecognizer
 from pydub import AudioSegment
 import pyaudio

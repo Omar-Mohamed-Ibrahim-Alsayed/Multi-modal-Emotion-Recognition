@@ -1,4 +1,6 @@
 import os.path
+import sys
+
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QSize, pyqtSignal
 from PyQt5.QtCore import pyqtSlot as Slot, QMutex
@@ -9,6 +11,8 @@ from AudioCapture import AudioCaptureThread
 from QuestionsGenerator import QuestionGenerator
 from VideoCapture import VideoCaptureThread
 from VideoPlayer import VideoPlayer
+from speaker import Speaker
+from STT import SpeechToTextProcessor
 
 class QuestionsUI(QtWidgets.QWidget):
     question_ui_requested_signal = pyqtSignal(bool)
@@ -43,6 +47,8 @@ class QuestionsUI(QtWidgets.QWidget):
         self.questionLabel = None
         self.VideoLabel = None
         self.questionNumberLabel = None  # Label for question number
+        self.talk = Speaker(1)
+        self.transcript = SpeechToTextProcessor()
 
         self.init_ui()
         self.signals = 0
@@ -203,6 +209,7 @@ class QuestionsUI(QtWidgets.QWidget):
         self.QuestionsGeneratorIter = iter(self.QuestionsGenerator)
         self.stackedWidget1.setCurrentIndex(0)
         self.stackedWidget2.setCurrentIndex(0)
+        self.talk.prepare_sounds(self.QuestionsGenerator.get_questions())
         self.next_question()
 
     def toggle_recording(self):
@@ -246,7 +253,9 @@ class QuestionsUI(QtWidgets.QWidget):
 
     def next_question(self):
         try:
-            self.questionLabel.setText(next(self.QuestionsGeneratorIter))
+            new_question =next(self.QuestionsGeneratorIter)
+            self.talk.start_speaking(new_question)
+            self.questionLabel.setText(new_question)
             self.update_question_number_label()  # Update question number label
             if os.path.exists("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4"):
                 self.videoPlayer.set_mediafile("./f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
@@ -307,6 +316,7 @@ class QuestionsUI(QtWidgets.QWidget):
             self.AudioAndVideoMerger.set_videofile(str(self.QuestionsGenerator.get_index()) + ".mp4")
             self.AudioAndVideoMerger.set_outfile("f" + str(self.QuestionsGenerator.get_index()) + ".mp4")
             self.AudioAndVideoMerger.start()
+
             self.AudioAndVideoMerger.finished.connect(self.show_player)
         self.mutex.unlock()
 
