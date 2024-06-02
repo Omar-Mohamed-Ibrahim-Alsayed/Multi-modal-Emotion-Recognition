@@ -24,6 +24,8 @@ pages = {
     "loading": 3
 }
 
+session = None
+
 class EmotionsThread(QThread):
     finished = Signal(dict)
     def get_emotions(self):
@@ -135,6 +137,8 @@ class MainApp(QMainWindow):
         self.home_btn_question.clicked.connect(self.go_to_home)
 
         self.session_dir = self.create_session_directory()
+        
+        
         self.log_file_path = os.path.join(self.session_dir, "session_log.txt")
 
         self.emots = {}
@@ -148,6 +152,8 @@ class MainApp(QMainWindow):
             os.mkdir(session_dir)
         
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        global session
+        session = current_time
         session_subdir = os.path.join(session_dir, current_time)
         os.mkdir(session_subdir)
 

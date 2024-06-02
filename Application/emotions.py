@@ -249,5 +249,5 @@ def predict(video_name):
     return emotions
 
 # predict('2024-05-30_13-40-43')
-emotions = predict('2024-05-30_13-40-43')
-print(emotions)
+# emotions = predict('2024-05-30_13-40-43')
+# print(emotions)
