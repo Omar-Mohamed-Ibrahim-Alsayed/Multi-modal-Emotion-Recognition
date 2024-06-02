@@ -357,8 +357,13 @@ class MainApp(QMainWindow):
             question_key = f"Question{i+1}"
             if question_key in data:
                 data[question_key]["Question"] = self.questions[key]
+               
+            if key in self.emots:
                 data[question_key]["Emotion"] = self.emots[key]
+
+            if key in self.answers:
                 data[question_key]["Answer"] = self.answers[key]
+
 
         # Convert the updated JSON back to a string
         updated_json_string = json.dumps(data, indent=4)
