@@ -134,7 +134,7 @@ if not os.path.exists(VIDEO_PATH):
 
 
 # Loop through each row in the DataFrame
-for index, row in tqdm(df.iterrows()):
+for index, row in tqdm(df.iterrows(), total=len(df)):
   # print(f"Name: {row['RecordingName']}")  # Access data using column name
   
   # 1. Determine whether its left or right cut
