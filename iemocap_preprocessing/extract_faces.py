@@ -95,11 +95,12 @@ for filename in tqdm(sorted(os.listdir(root))):
             if bbox[0] is not None:
                 bbox = bbox[0][0]
                 bbox = [round(x) for x in bbox]
+                bbox = [0 if x < 0 else x for x in bbox]
                 x1, y1, x2, y2 = bbox
             im = im[y1:y2, x1:x2, :]
-            print(filename)
-            print(bbox)
-            print(im.size)
+            # print(filename)
+            # print(bbox)
+            # print(im.shape)
             im = cv2.resize(im, (224,224))
             if save_avi:
                 out.write(im)
