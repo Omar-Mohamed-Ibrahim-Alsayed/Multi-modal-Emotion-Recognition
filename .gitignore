@@ -6,9 +6,16 @@ weights
 __pycache__/
 *.py[cod]
 *$py.class
-
+Application\QuestionsAudio\
+Application.zip
 # C extensions
 *.so
+Final Document.docx
+Final Document.pdf
+Final Presentation.pdf
+Final Presentation.pptx
+AIN SHAMS UNIVERSITY.docx
+AIN SHAMS UNIVERSITY.pdf
 
 # Distribution / packaging
 .Python
@@ -741,3 +748,5 @@ Application/ay_7aga.wav
 Application/emotions2.py
 Application/jsonhandler.py
 Application/main2.py
+pytorch_model.bin
+er/AffectNet_6336.h5

@@ -12,10 +12,18 @@ from llm import PsychologicalReportGenerator
 import markdown2
 from xhtml2pdf import pisa
 import io
-import time
-from emotions import predict
+import numpy as np
 from STT import SpeechToTextProcessor
-
+import pickle
+affect = {
+    "0": "neutral",
+    "1": "happy",
+    "2": "sad",
+    "3": "surprise",
+    "4": "fear",
+    "5": "disgust",
+    "6": "anger"
+}
 
 pages = {
     "homepage": 0,
@@ -24,22 +32,25 @@ pages = {
     "loading": 3
 }
 
-class EmotionsThread(QThread):
-    finished = Signal(dict)
-    def get_emotions(self):
-        return predict('2024-05-30_13-40-43')
+session = None
 
-    def run(self):
+# class EmotionsThread(QThread):
+#     finished = Signal(dict)
+#     def get_emotions(self):
+#         return predict('2024-06-23_02-04-32')
 
-        emotions = self.get_emotions()
-        self.finished.emit(emotions)
+#     def run(self):
+
+#         emotions = self.get_emotions()
+#         self.finished.emit(emotions)
 
 class AnswersThread(QThread):
     finished = Signal(dict)
 
     def get_answers(self):
+        global session
         stt = SpeechToTextProcessor()
-        return stt.transcribe_all('2024-05-30_13-40-43')
+        return stt.transcribe_all(session)
         
     def run(self):
 
@@ -150,13 +161,42 @@ class MainApp(QMainWindow):
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         session_subdir = os.path.join(session_dir, current_time)
         os.mkdir(session_subdir)
-
+        global session
+        session = session_subdir
         return session_subdir
 
+    def load_data(self,pickle_file_path):
+        if not os.path.exists(pickle_file_path):
+            raise FileNotFoundError(f"No data found for { pickle_file_path}")
+
+        with open(pickle_file_path, 'rb') as f:
+            data = pickle.load(f)
+
+        return data
+
     def get_emotions(self):
-        self.emots_thread = EmotionsThread()
-        self.emots_thread.finished.connect(self.handle_emotions_result)
-        self.emots_thread.start()
+        #self.emots_thread = EmotionsThread()
+        #self.emots_thread.finished.connect(self.handle_emotions_result)
+        #self.emots_thread.start()
+        emotions = {}
+        #directory = self.get_latest_session_directory()
+        directory = self.get_latest_session_directory()
+        for filename in os.listdir(directory):
+            if filename.endswith('.pkl'):
+                q, _ = os.path.splitext(filename) 
+                pickle_file_path = os.path.join(directory, f'{ q}.pkl')
+                emotions[q] = ''
+                data = self.load_data(pickle_file_path)
+                exp_average = data['exp_average']
+                interp = {affect[str(i)]: round(float(exp_average[i]) * 100, 2) for i in range(len(affect))}
+                for emotion, confidence in interp.items():
+                    emotions[q] = emotions[q] + f"Emotion: {emotion} Confidence: {confidence}%" + ' , '
+                max_emotion = np.argmax(exp_average)
+                emotions[q] = affect[str(max_emotion)]
+        self.emots = emotions
+
+
+
 
     def handle_emotions_result(self, emotions):
         self.emots = emotions
@@ -236,11 +276,11 @@ class MainApp(QMainWindow):
         self.log_event("Navigated to home page.")
 
    
-    def get_emotions(self):
-        # Create instances of the threads
-        self.emots_thread = EmotionsThread()
-        self.emots_thread.finished.connect(self.handle_emotions_result)
-        self.emots_thread.start()
+    # def get_emotions(self):
+    #     # Create instances of the threads
+    #     self.emots_thread = EmotionsThread()
+    #     self.emots_thread.finished.connect(self.handle_emotions_result)
+    #     self.emots_thread.start()
 
     def get_answers(self):
         self.answers_thread = AnswersThread()
@@ -269,8 +309,8 @@ class MainApp(QMainWindow):
         threads = []
 
         # Create a new thread for get_results method
-        thread = threading.Thread(target=self.get_emotions)
-        threads.append(thread)
+        self.get_emotions()
+        print(self.emots)
 
         thread = threading.Thread(target=self.get_answers)
         threads.append(thread)
@@ -288,7 +328,7 @@ class MainApp(QMainWindow):
         
        
 
-        while not all([self.emots_thread.isFinished(), self.answers_thread.isFinished(), self.questions_thread.isFinished()]):
+        while not all([self.answers_thread.isFinished(), self.questions_thread.isFinished()]):
             QApplication.processEvents()  
 
         # Log the event
@@ -315,31 +355,6 @@ class MainApp(QMainWindow):
                 "Question": "Think of a person you admire, what qualities do they possess that you wish you had, and how can you work on developing those qualities?",
                 "Answer": "I admire my grandmother's kindness and empathy towards others. I wish I had her ability to connect with people on a deeper level. I can work on developing this quality by actively listening to others and being more present in my interactions.",
                 "Emotion": "Sad"
-            },
-            "Question4": {
-                "Question": "Tell me about a time when you had to make a difficult decision, what was the outcome, and would you make the same choice again?",
-                "Answer": "I had to choose between two job offers, one with a higher salary and one with better work-life balance. I chose the latter, and it was the best decision I ever made. I'd make the same choice again because my mental health and happiness are more valuable to me than the extra money.",
-                "Emotion": "Calm"
-            },
-            "Question5": {
-                "Question": "How do you handle criticism or negative feedback, and can you give me an example from your past?",
-                "Answer": "I try to separate my self-worth from the criticism and focus on the constructive aspects. In a previous project, I received negative feedback on my presentation skills, which initially made me defensive. However, I took the feedback to heart, worked on improving, and saw significant growth in my abilities.",
-                "Emotion": "Neutral"
-            },
-            "Question6": {
-                "Question": "Describe a moment when you felt a strong sense of belonging, where was it, and what made it so special?",
-                "Answer": "During a volunteer trip to a rural village, I felt a strong sense of belonging with the community and my fellow volunteers. We worked together, shared stories, and supported each other, creating an unforgettable bond.",
-                "Emotion": "Happy"
-            },
-            "Question7": {
-                "Question": "What is something you used to believe in strongly when you were younger, but no longer believe in, and what caused you to change your mind?",
-                "Answer": "I used to believe that success was solely about achieving a high-paying job. However, as I grew older, I realized that success is more about finding fulfillment and happiness in what I do. This change in perspective was influenced by my experiences and seeing the unhappiness of others who were stuck in unfulfilling careers.",
-                "Emotion": "Surprised"
-            },
-            "Question8": {
-                "Question": "What do you value more, being liked by others or being true to yourself, and can you explain why?",
-                "Answer": "I value being true to myself more. I've learned that trying to appease others can lead to internal conflict and unhappiness. Being true to myself allows me to live authentically and find self-acceptance.",
-                "Emotion": "Calm"
             }
         }
         """

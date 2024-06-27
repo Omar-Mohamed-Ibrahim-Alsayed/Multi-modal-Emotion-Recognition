@@ -29,7 +29,7 @@ class PsychologicalReportGenerator:
         )
          return strtobool(response.choices[0].message.content)
 
-    def generate_questions(self, number_of_questions=8, questions_type="psychological"):
+    def generate_questions(self, number_of_questions=3, questions_type="psychological"):
         response = self.client.chat.completions.create(
             messages=[
                 {
@@ -172,6 +172,7 @@ class PsychologicalReportGenerator:
         while (True):
             try:
                 prompt = json.dumps(questions_and_answers)
+                print(prompt)
                 break
             except json.JSONDecodeError as e:
                 print("Error decoding JSON:", e)
