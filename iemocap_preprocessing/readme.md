@@ -1,0 +1,3 @@
+1. Provide the paths to the IEMOCAP raw dataset and the folder where you want the <span style="color: red;">processed data to be stored</span> in [config.py](./config.py)  <b>Note</b>:  Put the anotaions csv file under the directory specified that will hold <span style="color: red;">the processed data</span>.
+2. Run [iemocap_preprocess](./iemocap_preprocess.py) to get the video clips and audio files from the dataset according to the csv file provided.
+3. Run [extract_faces](./extract_faces.py) to extract the faces from the video and and store them for model training.

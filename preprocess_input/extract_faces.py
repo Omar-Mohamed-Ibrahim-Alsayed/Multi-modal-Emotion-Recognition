@@ -4,6 +4,19 @@ import cv2
 import torch
 from facenet_pytorch import MTCNN
 import time
+import subprocess
+import json
+import math
+
+def get_video_length(file_path):
+    result = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries",
+         "format=duration", "-of",
+         "default=noprint_wrappers=1:nokey=1", file_path],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    return math.floor(float(result.stdout))
+
 
 
 def extract_faces(video_name):
@@ -22,7 +35,7 @@ def extract_faces(video_name):
   # Define processing parameters
   save_frames = 15
   input_fps = 30
-  save_length = 5  # seconds
+  save_length = get_video_length(video_name)
   save_avi = True
   failed_videos = []
 

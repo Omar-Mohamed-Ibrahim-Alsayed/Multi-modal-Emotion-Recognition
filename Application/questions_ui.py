@@ -47,7 +47,7 @@ class QuestionsUI(QtWidgets.QWidget):
         self.questionLabel = None
         self.VideoLabel = None
         self.questionNumberLabel = None  # Label for question number
-        self.talk = Speaker(1)
+        self.talk = Speaker()
         self.transcript = SpeechToTextProcessor()
 
         self.init_ui()
@@ -277,7 +277,9 @@ class QuestionsUI(QtWidgets.QWidget):
 
     def prev_question(self):
         try:
-            self.questionLabel.setText(self.QuestionsGenerator.prev())
+            question = self.QuestionsGenerator.prev()
+            self.questionLabel.setText(question)
+            self.talk.start_speaking(question)
             self.update_question_number_label()  # Update question number label
             
             latest_directory = self.get_latest_session_directory()

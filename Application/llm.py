@@ -116,6 +116,7 @@ class PsychologicalReportGenerator:
                     "role": "system",
                     "content": """You will be provided with a series of questions and answers with the respondent's emotion as a label.
                     Your job is to generate a report on the respondent's psychological health.
+                    Take care that the answer is provided from a STT model so there might be some error on the text so if the answer doesnt make sence try to figure out what could have been said.
                     The report needs to be structured in markdown.
                     Make the report structured like this for each question and end it with a conclusion.
                     # Psychological Report

@@ -146,6 +146,8 @@ class MainApp(QMainWindow):
         self.home_btn_question.clicked.connect(self.go_to_home)
 
         self.session_dir = self.create_session_directory()
+        
+        
         self.log_file_path = os.path.join(self.session_dir, "session_log.txt")
 
         self.emots = {}
@@ -159,6 +161,8 @@ class MainApp(QMainWindow):
             os.mkdir(session_dir)
         
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        global session
+        session = current_time
         session_subdir = os.path.join(session_dir, current_time)
         os.mkdir(session_subdir)
         global session
@@ -366,8 +370,13 @@ class MainApp(QMainWindow):
             question_key = f"Question{i+1}"
             if question_key in data:
                 data[question_key]["Question"] = self.questions[key]
+               
+            if key in self.emots:
                 data[question_key]["Emotion"] = self.emots[key]
+
+            if key in self.answers:
                 data[question_key]["Answer"] = self.answers[key]
+
 
         # Convert the updated JSON back to a string
         updated_json_string = json.dumps(data, indent=4)
