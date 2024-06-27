@@ -7,6 +7,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 Application\QuestionsAudio\
+Application\STT
 Application.zip
 # C extensions
 *.so
@@ -16,6 +17,7 @@ Final Presentation.pdf
 Final Presentation.pptx
 AIN SHAMS UNIVERSITY.docx
 AIN SHAMS UNIVERSITY.pdf
+models\STT
 
 # Distribution / packaging
 .Python
